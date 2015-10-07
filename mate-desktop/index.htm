@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как устроен MATE-десктоп?</title>
+</head>
+<body>
+
+<table><tr><td valign="top">
+<h1>Как устроен MATE-десктоп?</h1>
+</td><td valign="top">
+<a href="../index.htm">блог всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+<font style="color:red">кто рисует меню в MATE ?</font>
+<br />
+<font style="color:red">какая программа рисует главное меню?</font>
+<br />
+<font style="color:red">как ту программу заменить?</font>
+<br />
+<font style="color:red">какие есть стандарты?</font>
+<br />
+<font style="color:red">Какие программы запускаются в каком порядке?</font>
+
+
+<h2>Второй подход</h2>
+
+пробуем искать по словам mate menu
+
+<br />
+<br />
+находится репозиторий
+<br />
+<a href="https://github.com/mate-desktop/mate-menus">https://github.com/mate-desktop/mate-menus</a>
+<br />
+library that implements the "Desktop Menu Specification" from freedesktop.org
+ <br />
+<a href="http://www.mate-desktop.org">http://www.mate-desktop.org</a>
+<br />
+<br />
+Возможно на том сайте есть оглавление и из него станут ясны ответы на все мои вопросы?
+<br />
+нет там такого оглавления (сразу не видно), зато есть отсылка на wiki
+<br />
+<a href="http://wiki.mate-desktop.org/download">http://wiki.mate-desktop.org/download</a>
+<br />
+а там есть совет обратиться на канал #mate в freenode
+<br />
+<a href="http://wiki.mate-desktop.org/board:manifesto">http://wiki.mate-desktop.org/board:manifesto</a> - манифест проработан недостаточно детально
+<br />
+почитаем роадмэп - <a href="http://wiki.mate-desktop.org/roadmap">http://wiki.mate-desktop.org/roadmap</a>
+<br />
+Официальный репозиторий - <a href="https://github.com/mate-desktop/">https://github.com/mate-desktop/</a>
+<br />
+Инструкция по сборке - <a href="http://wiki.mate-desktop.org/building">http://wiki.mate-desktop.org/building</a>
+<br />
+Руководство пользователя - <a href="https://github.com/mate-desktop/mate-user-guide">https://github.com/mate-desktop/mate-user-guide</a>
+<br />
+1.10 release notes - <a href="http://mate-desktop.org/blog/2015-06-11-mate-1-10-released/">http://mate-desktop.org/blog/2015-06-11-mate-1-10-released/</a>
+
+<br />
+<br />
+<a href="http://wiki.mate-desktop.org/session">http://wiki.mate-desktop.org/session</a> (форк gnome-session <a href="http://linux.die.net/man/1/gnome-session">http://linux.die.net/man/1/gnome-session</a>)
+<br />
+To start mate-desktop, you should add <strong>mate-session</strong> to ~/.xinitrc file (Without a display manager)
+<br />
+(ну вот, это уже хоть какая-то конкретика)
+<br />
+ If you have authorization problems (e.g. when mounting disks), try adding dbus-launch after ck-launch-session. 
+ <br />
+<br />
+GDM, KDM, LightDM, LXDM - should autodetect Mate Desktop.
+<br />
+<font style="color:red">Что такое display manager и зачем он нужен? Если нужен, то как работает без него?</font>
+<br />
+<br />
+<a href="https://en.wikipedia.org/wiki/X_display_manager_%28program_type%29">https://en.wikipedia.org/wiki/X_display_manager_(program_type)</a>
+<br />
+When the display manager runs on the user's computer, it starts the X server before presenting the user the login screen, 
+optionally repeating when the user logs out. In this condition, the DM realizes in the X Window System the functionality of getty and login on character-mode terminals.
+When the display manager runs on a remote computer, it acts like a telnet server, requesting username and password and starting a remote session.
+<br />
+<br />
+<font style="color:red">Нужно больше конкретики - что как называется, где лежит, кто кого и как запускает.</font>
+<br />
+<font style="color:red">как узнать, какой DM активен (запущен)?</font>
+<br />
+<font style="color:red">как узнать, какой сконфигурирован (будет запущен в следующий раз)?</font>
+<br />
+<br />
+окей, ладно, вот тут <a href="https://wiki.gentoo.org/wiki/Display_manager">https://wiki.gentoo.org/wiki/Display_manager</a> написано
+<br />
+In major Linux operating systems display managers are started automatically on boot.
+In order for this to happen automatically a script must be added to the proper init system's runlevel. 
+<br />
+<br />
+# systemctl list-unit-files | grep dm
+<br />
+lightdm.service
+<br />
+<br />
+то есть, ядро запускает init-процесс
+<br />
+init-процесс-запускает systemd
+<br />
+<br />
+gsettings - <a href="http://wiki.mate-desktop.org/docs:gsettings">http://wiki.mate-desktop.org/docs:gsettings</a>
+<br />
+systemd запускает всё подряд и в частности lightdm
+<br />
+lightdm запускает X Server и выводит окошко для логина, после чего создаёт сессию
+<br />
+(<font style="color:red">а что значит "создаёт сессию"? запускает какую-то программу? какую?</font>)
+<br />
+mate-session - чем она занимается?
+<br />
+<a href="http://linux.die.net/man/1/gnome-session">http://linux.die.net/man/1/gnome-session</a>
+<br />
+This command is typically executed by your login manager (either gdm, xdm, or from your X startup scripts, such as <strong>startx</strong>).
+<br />
+window manager is called "marco", it is started by mate-session:
+<br />
+<a href="https://wiki.archlinux.org/index.php/MATE#Use_a_different_window_manager_with_MATE">https://wiki.archlinux.org/index.php/MATE#Use_a_different_window_manager_with_MATE</a>
+
+<br />
+<br />
+The MATE Panel 1.8.1, почему у The Mate Panel в About Box иконка гномьей пятки?
+<br />
+<font style="color:red">кто занимается запуском gnome-panel?</font>
+<br />
+<font style="color:red">Это именно эта программа рисует главное меню или какая-то другая?</font>
+<br />
+<br />
+I'm greeted by my wallpaper, and nothing else. Gnome-Panel does not launch. I can use the hotkey (Ctrl + Alt + T) and then launch gnome-panel manually, and it works fine. It is not malfunctioning, but when I login, it doesn't start automatically.
+<br />
+gconftool --recursive-unset /apps/panel
+<br />
+pkill gnome-panel
+<br />
+<br />
+run gconf-editor in a terminal. Then go to /desktop/gnome/session/required_components
+<br />
+see the name 'panel' and confirm that gnome-panel is written as its value. 
+<br />
+<br />
+вероятно mate-panel запускает
+<br />
+Notification Area 1.8.1
+<br />
+<br />
+редактор меню:
+<br />
+<a href="http://wiki.mate-desktop.org/docs:mozo">http://wiki.mate-desktop.org/docs:mozo</a> (fork of GNOME Alacarte)
+<br />
+<a href="https://github.com/GNOME/alacarte">https://github.com/GNOME/alacarte</a>
+<br />
+a menu editor for GNOME using the freedesktop.org menu specification.
+<br />
+<br />
+вот спека на меню:
+<br />
+<a href="http://standards.freedesktop.org/menu-spec/latest/">http://standards.freedesktop.org/menu-spec/latest/</a>
+<br />
+<a href="http://linux.m2osw.com/autohide-gnome-panel-when-two-panels-are-bottom">http://linux.m2osw.com/autohide-gnome-panel-when-two-panels-are-bottom</a>
+<br />
+<a href="https://www.maketecheasier.com/4-great-alternatives-to-gnome-menu-bar/">https://www.maketecheasier.com/4-great-alternatives-to-gnome-menu-bar/</a>
+<br />
+~/.config/menus
+<br />
+<br />
+<a href="https://people.gnome.org/~bmsmith/build/gospanel-17.html">Applets</a>
+<br />
+<a href="https://developer.gnome.org/panel-applet/stable/">https://developer.gnome.org/panel-applet/stable/</a>
+<br />
+<br />
+<a href="http://ubuntuforums.org/showthread.php?t=6517">http://ubuntuforums.org/showthread.php?t=6517</a>
+<br />
+<br />
+Tomboy Gnome Panel Applet - <a href="https://lists.ubuntu.com/archives/ubuntu-mono/2013-October/042394.html">https://lists.ubuntu.com/archives/ubuntu-mono/2013-October/042394.html</a>
+<br />
+<a href="https://github.com/mate-desktop/mate-applets">https://github.com/mate-desktop/mate-applets</a>
+<br />
+GNOME at default mode don't have Default Provider in gnome.session (only in fall-back mode). 
+<br />
+<a href="http://askubuntu.com/questions/350488/use-notify-osd-instead-notification-daemon-in-gnome-shell">http://askubuntu.com/questions/350488/use-notify-osd-instead-notification-daemon-in-gnome-shell</a>
+<br />
+Notify OSD — Notification server for Unity.
+
+<h3>Main Menu</h3>
+меню на панель добавляется:
+<br />
+<a href="http://linux.about.com/library/gnome/blgnome4n7.htm">http://linux.about.com/library/gnome/blgnome4n7.htm</a>
+<br />
+то есть, если почитать описание того, как делать добавки для gnome-panel (они называется <a href="https://people.gnome.org/~bmsmith/build/gospanel-8.html">Panel Object</a>), то можно будеть сделать своё другое меню, которое можно будет добавлять на панель.
+
+<h3>нотификации</h3>
+<br />
+<br />
+<a href="https://github.com/mate-desktop/mate-notification-daemon">mate-notification-daemon</a> - вот это интересное название
+(fork of <a href="https://github.com/GNOME/notification-daemon">gnome-notification-daemon</a>), но нет гиперссылки. Что же он делает? 
+<br />
+Это сервер нотификаций:
+<br />
+<a href="https://wiki.archlinux.org/index.php/Desktop_notifications">https://wiki.archlinux.org/index.php/Desktop_notifications</a>
+<br />
+А ещё есть библиотека, которую используют приложения
+
+<h3>автозапуск приложений</h3>
+The <a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/416">auto</a>-start <a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/159">application</a> in <a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/778">Gnome</a> were using sessions before. That worked great in older versions (10.04) but somehow stopped now. Instead, you have to write a little <em><a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/14">script</a></em> <a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/12">file</a> here:</p>
+<p class="rtecenter">/home/alexis/.config/autostart/<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/778">gnome</a>-terminal.desktop</p>
+<pre class="rteindent1">[Desktop Entry]
+<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/317">Type</a>=<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/159">Application</a>
+Exec=/usr/bin/<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/778">gnome</a>-terminal --<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/155">load</a>-config=/home/alexis/.gnome2/terminal.ini
+Hidden=<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/632">false</a>
+NoDisplay=<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/632">false</a>
+X-<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/778">GNOME</a>-Autostart-enabled=true
+Name[en_US]=<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/778">Gnome</a> Terminal
+Name=<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/778">Gnome</a> Terminal
+Comment[en_US]=<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/155">Load</a> terminal using ~/.gnome2/terminal.ini
+Comment=<a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/155">Load</a> your <a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/778">Gnome</a> terminal from ~/.gnome2/terminal.ini <a class="mo-glossary mo-glossary-a1" href="http://linux.m2osw.com/taxonomy/term/12">file</a>
+</pre>
+
+<h2>Первый подход</h2>
+
+Что обычные люди могут узнать глядя на десктоп? Практически ничего. Никакие компоненты не подписаны ни непосредственно, ни в тултипах, и нет специальной утилиты, которая выдавала бы справку при наведении на элемент интерфейса.
+<br />
+<br />
+Как люди получают знания об устройстве десктопа? Они просматривают форум с описанием проблем и выделяют наиболее часто встречающиеся необычные слова,
+по которым затем пытаются восстановить общую картину какие из этих слов являются компонентами и как эти компоненты взаимодействуют.
+<br />
+Это очень долго и непродуктивно, даже если использовать продвинутый текстовый процессор типа wiki
+<br />
+<br />
+<dl>
+<dt>mate</dt>
+<dd>это, наверное, название desktop environment (DE)</dd>
+
+<dt>marko</dt>
+<dd>менеджер окон по-умолчанию</dd>
+
+<dt>gnome-panel</dt>
+<dd>gnome-panel --replace</dd>
+
+<dr>gnome-shell</dt>
+<dd>???</dd>
+
+<dt>редактор конфигурации MATE</dt>
+<dd>позволяет задавать менеджер окон. Менеджер окон по-умолчанию - marko</dd>
+
+<dt>менеджер окон</dt>
+<dd>
+<font style="color:red">зачем вообще нужен менеджер окон, какие функции он выполняет/реализовывает?</font>
+</dd>
+
+<dt>иксы и их настройки</dt>
+<dd>Файлика .xinitrc нет - иксы работают на общесистемных настройках.</dd>
+
+<dt>compiz</dt>
+<dd>в качестве менеджера окон
+<br />
+Есть два варианта запуска:
+<br />
+- через настройки, изменяемые редактором конфигурации MATE
+<br />
+- через "запускаемые приложения" командой compiz --replace
+<br />
+при зависании файл .xsession-errors раздувается до 6-7 мегабайт за счёт многократно повторяющейся одной строки:
+<br />
+"Предупреждение менеджера окон: У экрана 0 дисплея «:0» уже есть менеджер окон. Попробуйте использовать параметр --replace, чтобы заместить текущий менеджер окон."
+</dd>
+
+<dt>gnome 3</dt>
+<dd>это, наверное, название DE</dd>
+<dt>cinnamon</dt>
+<dd>это, наверное, название DE</dd>
+
+</dl>
+
+</body>
+</html>

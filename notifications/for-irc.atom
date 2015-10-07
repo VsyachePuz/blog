@@ -1,44 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title type="text">Блог свячепуза</title>
+  <title type="text">Блог VsyachePuz-а</title>
   <id>http://vsyachepuz.github.io/blog</id>
-  <updated>2015-09-29T11:36:54.106323Z</updated>
+  <updated>2015-09-29T12:22:40.625976Z</updated>
   <link rel="self" type="text/html" title="VsyachePuz's blog feed" href="http://vsyachepuz.github.io/blog/myfeed.xml" />
   <link type="text/html" title="Site link" href="http://vsyachepuz.github.io/blog" />
-  <generator>MyPad</generator>
+  <generator>Руки</generator>
   <entry>
-    <id>http://vsyachepuz.github.io/blog/0.htm</id>
-    <title type="text">0</title>
-    <published>2015-09-29T11:36:54.109166Z</published>
-    <updated>2015-09-29T11:36:54.109063Z</updated>
-    <link href="http://vsyachepuz.github.io/blog/0.htm" />
-  </entry>
-  <entry>
-    <id>http://vsyachepuz.github.io/blog/1.htm</id>
-    <title type="text">1</title>
-    <published>2015-09-29T11:36:54.109483Z</published>
-    <updated>2015-09-29T11:36:54.109481Z</updated>
-    <link href="http://vsyachepuz.github.io/blog/1.htm" />
-  </entry>
-  <entry>
-    <id>http://vsyachepuz.github.io/blog/2.htm</id>
-    <title type="text">2</title>
-    <published>2015-09-29T11:36:54.109525Z</published>
-    <updated>2015-09-29T11:36:54.109522Z</updated>
-    <link href="http://vsyachepuz.github.io/blog/2.htm" />
-  </entry>
-  <entry>
-    <id>http://vsyachepuz.github.io/blog/3.htm</id>
-    <title type="text">3</title>
-    <published>2015-09-29T11:36:54.109562Z</published>
-    <updated>2015-09-29T11:36:54.10956Z</updated>
-    <link href="http://vsyachepuz.github.io/blog/3.htm" />
-  </entry>
-  <entry>
-    <id>http://vsyachepuz.github.io/blog/4.htm</id>
-    <title type="text">4</title>
-    <published>2015-09-29T11:36:54.109604Z</published>
-    <updated>2015-09-29T11:36:54.109601Z</updated>
-    <link href="http://vsyachepuz.github.io/blog/4.htm" />
+    <id>3ef399c1-4274-4f0e-89e2-403ed41ac86b</id>
+    <title type="text">Как устроен MATE-десктоп?</title>
+    <published>2015-10-07T17:00:00Z</published>
+    <updated>2015-10-07T17:00:00Z</updated>
+    <link href="http://vsyachepuz.github.io/blog/mate-desktop/index.htm" />
   </entry>
 </feed>
