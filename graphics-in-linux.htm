@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как работает графика в linux</title>
+</head>
+<body>
+
+<table><tr><td valign="top">
+<h1>Как работает графика в linux</h1>
+</td><td valign="top">
+<a href="index.htm">блог всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+<a href="http://stackoverflow.com/questions/6399676/how-does-opengl-work-at-the-lowest-level/6401607#6401607">http://stackoverflow.com/questions/6399676/how-does-opengl-work-at-the-lowest-level/6401607#6401607</a>
+<br />
+1. At the lowest level there's some graphics <strong>device</strong>. Nowadays these are GPUs which provide a set of registers controlling their operation 
+(which registers exactly is device dependent) have some program memory for shaders, bulk memory for input data (vertices, textures, etc.) 
+and an I/O channel to the rest of the system over which it recieves/sends data and command streams.
+<br />
+Newer hardware has processor cores ("shaders") inside the video card, which differ from your CPU in that they each run much slower, 
+but there are many more of them working in parallel. For these video cards, the driver prepares program binaries to run on the GPU shaders.
+<br />
+2. The graphics <strong>driver</strong> keeps track of the GPUs state and all the resources application programs that make use of the GPU.
+Also it is responsible for conversion or any other processing the data sent by applications (convert textures into the pixelformat supported by the GPU,
+compile shaders in the machine code of the GPU). Furthermore it provides some abstract, driver dependent interface to application programs.
+<br />
+3. Then there's the driver dependent OpenGL client library/driver. this resides in two places
+<br />
+- X11 GLX module and driver dependent GLX driver
+<br />
+- and /usr/lib/libGL.so may contain some driver dependent stuff for direct rendering
+<br />
+It is this part that translates OpenGL calls how you do it into calls to the driver specific functions in the part of the driver described in <strong>2.</strong>
+<br />
+4. the actual OpenGL API library /usr/lib/libGL.so;
+<br />
+this mostly just passes down the commands to the OpenGL implementation proper.
+<br />
+<br />
+In Unix the 3&lt;-&gt;4 connection may happen either over Sockets (yes, it may, and does go over network if you want to) or through Shared Memory. 
+<br />
+OpenGL specification state that commands are sent in a client/server mode. The specification is too broad to determine a specific tecnology used by OpenGL implementations.
+<br />
+<br />
+Communication betwen 3&lt;-&gt;2 may go through ioctl, read/write, or through mapping some memory into process address space and configuring the MMU 
+to trigger some driver code whenever changes to that memory are done. This is quite similar on any operating system since 
+you always have to cross the kernel/userland boundary: Ultimately you go through some syscall.
+<br />
+Your program calls the installable client driver (which is not really a driver, it's a userspace shared library). That will use ioctl or a similar mechanism to pass data to the kernel driver.
+<br />
+<br />
+Communication between system and GPU happen through the periphial bus and the access methods it defines,
+so PCI, AGP, PCI-E, etc, which work through Port-I/O, Memory Mapped I/O, DMA, IRQs.
+<br />
+<br />
+
+<a href="https://en.wikipedia.org/wiki/Blend4Web">https://en.wikipedia.org/wiki/Blend4Web</a>
+
+</body>
+</html>

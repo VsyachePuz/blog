@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Создание своего профиля</title>
+</head>
+<body>
+
+<table><tr><td valign="top">
+<h1>Набор программ по-умолчанию</h1>
+</td><td valign="top">
+<a href="index.htm">блог всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+<h2>gentoo</h2>
+
+<h3>профили</h3>
+<a href="https://wiki.gentoo.org/wiki/Profile_%28Portage%29">https://wiki.gentoo.org/wiki/Profile_(Portage)</a>
+<br />
+месторасположение по-умолчанию 
+<br />
+/usr/portage/profiles
+<br />
+(<font style="color:red">а как месторасположение переопределить?</font>)
+<br />
+читаем <a href="https://dev.gentoo.org/~zmedico/portage/doc/man/make.conf.5.html">man 5 make.conf</a>
+<br />
+CCACHE_DIR
+<br />
+DISTDIR
+<br />
+PKGDIR
+<br />
+PORTAGE_TMPDIR
+<br />
+PORTDIR
+<br />
+RPMDIR
+<br />
+то есть профили из главного репозитория перенести в другую директорию нельзя <font style="color:red">никак</font>
+<br />
+<br />
+и вообще, на самом деле они лежат не там. есть директория /etc/portage/make.profile, которая может быть симлинком
+<br />
+а значение симлинка перезаписывается командами
+<br />
+eselect profile set N
+<br />
+из списка
+<br />
+eselect profile list
+<br />
+<br />
+- defines a set of system packages
+<br />
+- [default] values for global USE flags
+<br />
+- [default] values for per-package  USE flags
+<br />
+- [default] values for most variables found in /etc/portage/make.conf
+<br />
+- masks unstable package versions and USE flags
+<br />
+<br />
+что неясно из прочитанного - <font style="color:red">где располагается исходный список несистемных пакетов, который можно переопределять в /var/lib/portage/world ?</font>
+<br />
+когда создают Live-систему, там же предустанавливают пакеты? Значит там есть свой world (но он тупо лежит в отдельном chroot-е сборки)
+<br />
+а когда используют инсталляторы типа Anaconda и Calamares, они ведь при выборе варианта десктопа <font style="color:red">содержат список пакетов, которые надо в тот десктоп поставить?</font>
+<br />
+AltLinux -<a href="https://www.altlinux.org/Alterator">https://www.altlinux.org/Alterator</a>
+<br />
+или там просто используется соответствие "выбор пользователя" - "метапакет" ?
+<br />
+как назвается инсталлятор, который используется в Calculate?
+
+<h3>Переопределяющие профили</h3>
+All profiles are cascading/stackable profiles composed by several subprofiles.
+<br />
+Lower level subprofiles (e.g default/linux/amd64) also can have a file called <strong>parent</strong>, which pulls in one or more other higher level subprofiles
+<br />
+
+<h3>Список установленных пакетов</h3>
+Как получить список установленных пакетов в Gentoo?
+<br />
+<br />
+ cd /var/db/pkg/ && ls -d */*
+<br />
+<br />
+или:
+<br />
+equery находится в пакете gentoolkit
+<br />
+equery list "*"
+<br />
+or, you can try to experiment with "emerge -epv world"
+
+<h3>бинарные пакеты</h3>
+qpkg находится в пакете gentoolkit
+<br />
+# qpkg
+<br />
+Usage: qpkg <opts> <misc args> : manipulate Gentoo binpkgs
+<br />
+функции Qpkg для работы с обычными пакетами перенесены в equery
+
+
+
+
+
+
+
+<h2>calculate</h2>
+<a href="http://www.calculate-linux.ru/blogs/ru/488/show">http://www.calculate-linux.ru/blogs/ru/488/show</a>
+<br />
+<font style="color:red">что такое шаблоны в calculate?</font>
+<br />
+<a href="http://www.calculate-linux.org/main/en/calculate_utilities_templates">http://www.calculate-linux.org/main/en/calculate_utilities_templates</a>
+<br />
+<a href="http://www.calculate-linux.org/main/ru/calculate_utilities_templates">http://www.calculate-linux.org/main/ru/calculate_utilities_templates</a>
+
+<h3>Установщик в Calculate</h3>
+<a href="http://www.calculate-linux.org/main/en/calculate-console-gui">http://www.calculate-linux.org/main/en/calculate-console-gui</a>
+<br />
+что-то он не похож на то, что я помню происходило при установке
+
+<h3>Список пакетов как шаблон</h3>
+<font style="color:red">Где располагаются шаблоны в репозитории Calculate?</font>
+<br />
+<font style="color:red">Где посмотреть пример изменения файла /var/lib/portage/world?</font>
+<br />
+<font style="color:red">как найти все такие примеры поиском?</font>
+
+
+
+
+
+
+
+
+<h2>Что мы знаем про Calamares</h2>
+<img src="images/calamares.png" alt="images/calamares.png" align="right" />
+<br />
+<a href="https://packages.gentoo.org/packages/app-admin/calamares">https://packages.gentoo.org/packages/app-admin/calamares</a>
+
+
+<br />
+сайт с доками: <a href="https://calamares.io/">https://calamares.io/</a>
+<br />
+багтрекер (Jira, без js не работает): <a href="https://calamares.io/bugs">https://calamares.io/bugs</a>
+<br />
+репозиторий: <a href="https://github.com/calamares/calamares">https://github.com/calamares/calamares</a>
+<br />
+люди: <a href="https://calamares.io/team/">https://calamares.io/team/</a>
+<br />
+features:
+<br />
+advanced partitioning (казалось бы, зачем, если есть gparted и kparted)
+<br />
+It is the first installer with an automated “Replace Partition” option
+
+
+</body>
+</html>

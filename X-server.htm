@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как работает X-сервер</title>
+</head>
+<body>
+
+<table><tr><td valign="top">
+<h1>Как работает X-сервер</h1>
+</td><td valign="top">
+<a href="/index.htm">блог всячепуза</a>,
+<a href="index.htm">блог всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+<br />
+<br />
+Если вы не планируете использовать графический менеджер входа в систему (gdm, kdm или xdm), 
+<br />
+тогда измените файл общей конфигурации /etc/X11/xinit/xinitrc (для всех пользователей) или .xinitrc для каждого отдельного пользователя. 
+<br />
+<br />
+Если вы хотите испольуете стандартный xdm, который идёт в связке с Xorg,
+<br />
+то для замены оконного менеджера
+<br />
+отредактируйте /etc/rc.conf и измените строчку 
+<br />
+XSESSION="Xsession" на XSESSION="fluxbox". 
+
+</body>
+</html>
