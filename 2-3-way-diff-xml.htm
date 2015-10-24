@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>А не закодить ли 2-Way и 3-Way Diff для XML?</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>А не закодить ли 2-Way и 3-Way Diff для XML?</h1>
+</td><td style="vertical-align:top;">
+<a href="index.htm">блог всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+Реализация алгоритма N(OD) из работы <strong>1986, Myers</strong> для 2-way merge не даёт конкурентного преимущества, 
+<br>
+потому что N(OD)-алгоритм сравнивает файлы парами (A, O), (B, O), а не все три файла сразу.
+<br>
+Как его реализовывать на C#, есть статья <strong>20060314, Hertel</strong>.
+<br>
+<br>
+Конкурентного преимущества он не даёт, потому что приводит к неоптимальным результатам, 
+<br>
+как описано в работе <strong>2007, Khanna</strong>
+<br>
+<br>
+Поэтому имеет смысл реализовывать алгоритм SDiff3 (Similarity-Based State-Based Synchronizer) из работы <strong>2015, Autexier</strong>
+<br>
+<br>
+Всего нужно прочитать 94 страницы + 45 для tree diff, норматив скорости перевода для профессионалов - 10 страниц в день (<a href="http://www.norma-tm.ru/article/article1-4.html">*</a>),
+<br>
+для понимания, возможно, потребуется читать что-то ещё, поэтому для оценки возьмем 5 страниц в день. 95 страниц = 19 дней на изучение области
+<br>
+( хотя есть оценка в 1 месяц - <a href="http://c2.com/cgi/wiki?DiffAlgorithm">http://c2.com/cgi/wiki?DiffAlgorithm</a>,
+если 21 рабочий день, то похоже )
+<br>
+объём кода будет ~5000 строк, 10 строк в день пишут в среднем, гениальные программисты в 10 раз быстрее обычных, итого +50 дней.
+<br>
+<br>
+Общий вывод - похоже на работы по грантам РФФИ
+<br>
+<a href="http://www.math.spbu.ru/user/kromanovsky/docline/pdf/luciv.koznov.andreev.2012.sysprog.pdf">http://www.math.spbu.ru/user/kromanovsky/docline/pdf/luciv.koznov.andreev.2012.sysprog.pdf</a>
+
+<h3>Литература для 3-way diff, 2-way diff и LCS</h3>
+
+<dl>
+<dt>2015, Autexier S, Similarity-Based Diff, Three-Way Diff and Merge</dt>
+<dd><a href="http://ijsi.org/ch/reader/create_pdf.aspx?file_no=i217&amp;year_id=2015&amp;quarter_id=2&amp;falg=1">http://ijsi.org/ch/reader/create_pdf.aspx?file_no=i217&amp;year_id=2015&amp;quarter_id=2&amp;falg=1</a>
+<br>
+19 страниц
+</dd>
+
+<br>
+
+<dt>2011-11, Ritcher Bill, Guiffy SureMerge - A Trustworthy 3-Way Merge, <a href="http://www.guiffy.com/SureMergeWP.html">http://www.guiffy.com/SureMergeWP.html</a></dt>
+<dd>14 страниц, читать, чтобы понять, что без использования алгоритмов tree diff хороших результатов для исходников не получится</dd>
+
+<br>
+
+<dt>2010-06-04, Johansen Martin Fagereng, Testing Eclipse Compare’s Algorithm for Three-way Merging</dt>
+<dd>
+<a href="http://www.uio.no/studier/emner/matnat/ifi/INF4290/v11/undervisningsmateriale/report.pdf">http://www.uio.no/studier/emner/matnat/ifi/INF4290/v11/undervisningsmateriale/report.pdf</a>
+<br>
+19 страниц, читать нужно чтобы понять, как можно тестировать, как могут существовать ошибки в алгоритме сравнения, и какие
+</dd>
+
+<br>
+
+<dt>2007, Khanna S., Kunal K., Pierce B.C., A Formal Investigation of Diff3</dt>
+<!--
+Khanna S, Kunal K, Pierce BC. A formal investigation of diff3. In: Arvind V, Prasad S, eds.
+FSTTCS 2007: Foundations of Software Technology and Theoretical Computer Science. Lecture
+Notes in Computer Science. Springer Berlin Heidelberg. 2007, volume 4855. 485-496.
+-->
+<dd><a href="http://www.seas.upenn.edu/~sanjeev/papers/fsttcs07_diff3.pdf">http://www.seas.upenn.edu/~sanjeev/papers/fsttcs07_diff3.pdf</a>
+<br>
+12 страниц
+</dd>
+
+<br>
+
+<dt>1986, Myers Eugene , "An O(ND) Difference Algorithm and its Variations" by , Algorithmica Vol. 1 No. 2, p 251.</dt>
+<!--
+Myers EW. An o(nd) difference algorithm and its variations. Algorithmica, 1986, 1(2): 251㉦.
+-->
+<dd><a href="http://xmailserver.org/diff2.pdf">http://xmailserver.org/diff2.pdf</a>
+<br>
+15 страниц, изучить, потому что это один из алгоритмов git - <a href="http://git.661346.n2.nabble.com/diff-ing-files-td6446460.html">http://git.661346.n2.nabble.com/diff-ing-files-td6446460.html</a>
+</dd>
+
+<br>
+
+<dt>1977. Hunt, J.W. and Szymanski, T.G. "A Fast Algorithm for Computing Longest Common Subsequences.’’ Communications of ACM 20, 5 (1977), 350-353</dt>
+<dd>
+<a href="http://www.cs.bgu.ac.il/~dpaa111/wiki.files/HuntSzymanski.pdf">http://www.cs.bgu.ac.il/~dpaa111/wiki.files/HuntSzymanski.pdf</a>
+<br>
+4 страницы,
+<br>
+<a href="https://en.wikipedia.org/wiki/Hunt%E2%80%93McIlroy_algorithm">https://en.wikipedia.org/wiki/Hunt–McIlroy_algorithm</a>
+<br>
+<a href="https://ru.wikipedia.org/wiki/Наибольшая_общая_подпоследовательность">https://ru.wikipedia.org/wiki/Наибольшая_общая_подпоследовательность</a>
+<br>
+<a href="https://en.wikipedia.org/wiki/Longest_common_subsequence_problem">https://en.wikipedia.org/wiki/Longest_common_subsequence_problem</a>
+<br>
+15 страниц, читать нужно, потому что LCS это база для N(OD)
+</dd>
+
+</dl>
+
+<h3>Литература для tree diff</h3>
+
+<dl>
+
+<dt>2007, Joe Tekli; Richard Chbeir; Kokou Yetongnon, Efficient XML Structural Similarity Detection using Sub-tree Commonalities</dt>
+<dd><a href="http://le2i.cnrs.fr/IMG/publications/Efficient%20XML%20Structural%20Similarity%20Detection%20using%20Sub-tree%20Commonalities.pdf">http://le2i.cnrs.fr/IMG/publications/Efficient XML Structural Similarity Detection using Sub-tree Commonalities.pdf</a>
+<br>
+15 страниц
+</dd>
+
+<dt>1989, Kaizhong Zhang and Dennis Shasha, Simple fast algorithms for the editing distance between trees and related problems</dt>
+<dd>
+<a href="http://www.grantjenks.com/wiki/_media/ideas:simple_fast_algorithms_for_the_editing_distance_between_tree_and_related_problems.pdf">http://www.grantjenks.com/wiki/_media/ideas:simple_fast_algorithms_for_the_editing_distance_between_tree_and_related_problems.pdf</a>
+<br />
+18 страниц
+<br>
+Tutorial: <a href="http://www.youtube.com/watch?v=hwiks-n7vso">http://www.youtube.com/watch?v=hwiks-n7vso</a>
+</dd>
+
+<br>
+
+<dt>1979, Kuo-Chung Tai, The Tree-to-Tree Correction Problem</dt>
+<dd><a href="http://www.grantjenks.com/wiki/_media/ideas/treetotreecorrect.pdf">http://www.grantjenks.com/wiki/_media/ideas/treetotreecorrect.pdf</a>
+<br>
+12 страниц
+</dd>    
+</dl>
+
+</body>
+</html>
