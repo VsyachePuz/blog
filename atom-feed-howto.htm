@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как вставить содержимое поста в ленту новостей</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Как вставить содержимое поста в ленту новостей</h1>
+</td><td style="vertical-align:top;">
+<a href="index.htm">блог всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+<h2>RFS на Atom</h2>
+<h3>summary</h3>
+    	<a href="https://tools.ietf.org/html/rfc4287#section-4.2.13">https://tools.ietf.org/html/rfc4287#section-4.2.13</a>
+
+<h3>content</h3>
+    	<a href="https://tools.ietf.org/html/rfc4287#section-4.1.3">https://tools.ietf.org/html/rfc4287#section-4.1.3</a>
+
+<h2>Как вставлять .svg-рисунки?</h2>
+
+Есть две идеи:
+<br />
+1) подгрузить .html-страницу прямо с того места, где она была опубликована
+<br />
+2) попробовать сформировать контент так, чтобы он содержал html, а внутри него был внедрён .svg
+<br />
+<br />
+		<svg height="100" width="100" xmlns:xlink="http://www.w3.org/1999/xlink">
+		  <a xlink:href="http://www.w3schools.com/svg/" target="_blank">
+			  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="yellow" />
+			  <circle cx="50" cy="50" r="15" stroke="black" stroke-width="3" fill="blue" />
+		  </a>
+		  svg-картинки отключены. В Thunderbird выбрать View -&gt; Feed message body as -&gt; Original HTML.
+		</svg>
+
+    	
+<h2>Thunderbird</h2>
+отображает то, что задаётся в теге content
+<br />
+<br />
+<a href="http://kb.mozillazine.org/Images_in_messages_do_not_appear">http://kb.mozillazine.org/Images_in_messages_do_not_appear</a>
+<br />
+<br />
+<img src="images/Original-HTML.png" alt="images/Original-HTML.png" />
+<br />
+<br />
+Собирать thunderbird надо с поддержкой .svg:
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=366126">https://bugzilla.mozilla.org/show_bug.cgi?id=366126</a>
+<br />
+<br />
+Однако такого USE-флага не видно:
+<br />
+<br />
+# emerge -pv thunderbird
+<br />
+These are the packages that would be merged, in order:
+<br />
+Calculating dependencies... done!
+<br />
+[ebuild     U  ] mail-client/thunderbird-38.2.0::gentoo [38.0.1-r1::gentoo] USE="crypt dbus jemalloc3 jit ldap lightning%* minimal pulseaudio startup-notification -bindist -custom-cflags -custom-optimization -debug -gstreamer -gstreamer-0% -hardened -mozdom (-selinux) -system-cairo -system-icu -system-jpeg -system-libvpx -system-sqlite" LINGUAS="ar bg br ca cs cy%* da de el et eu fi fr gl he hr hu is it ja ko lt nl pl ro ru sk sl sr tr uk vi -ast -be -bn_BD -en_GB -es_AR -es_ES -fy_NL -ga_IE -gd -hsb% -hy_AM -id -nb_NO -nn_NO -pa_IN -pt_BR -pt_PT -rm -si -sq -sv_SE -ta_LK -zh_CN -zh_TW" 220,455 KiB
+<br />
+<br />
+но вроде бы работает.
+<br />
+<br />
+Впервые эта фича появилась в 2004-м году:
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://blog.codefront.net/2004/08/01/rss-integration-enabled-in-yesterdays-thunderbird-nightly-builds/">http://blog.codefront.net/2004/08/01/rss-integration-enabled-in-yesterdays-thunderbird-nightly-builds/</a>
+
+</body>
+</html>
