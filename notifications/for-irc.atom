@@ -2,10 +2,47 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title type="text">Блог VsyachePuz-а</title>
   <id>http://vsyachepuz.github.io/blog</id>
-  <updated>2015-10-24T00:00:00Z</updated>
-  <link rel="self" type="text/html" title="VsyachePuz's blog feed" href="http://vsyachepuz.github.io/blog/myfeed.xml" />
+  <updated>2015-10-26T11:01:15.96639Z</updated>
+  <link rel="self" type="text/html" title="VsyachePuz's blog feed" href="https://raw.githubusercontent.com/VsyachePuz/blog/gh-pages/notifications/for-irc.atom" />
   <link type="text/html" title="Site link" href="http://vsyachepuz.github.io/blog" />
   <generator>Руки</generator>
+  <entry>
+    <id>2029da25-5d47-4a37-b2b0-3f673320254c</id>
+    <title type="text">Нужны ли часы с PoE?</title>
+    <published>2015-10-27T00:00:00Z</published>
+    <updated>2015-10-27T00:00:00Z</updated>
+    <link href="http://vsyachepuz.github.io/blog/NTP-PoE.htm" />
+    <summary>
+    	<a href="https://tools.ietf.org/html/rfc4287#section-4.2.13">https://tools.ietf.org/html/rfc4287#section-4.2.13</a>
+    	<br />
+	    <h2>Аннотация</h2> Нужны ли часы с PoE?
+	    <br />
+	    это такая тестовая новость для того, чтобы проверить,
+	    как будет Thunderbird отображать тело сообщения.
+	    <br />
+    </summary>
+    <content>
+    	<a href="https://tools.ietf.org/html/rfc4287#section-4.1.3">https://tools.ietf.org/html/rfc4287#section-4.1.3</a>
+    	<br />
+    	Интересно, можно ли тут вставлять .svg-картнки?
+    	<br />
+		<svg height="100" width="100">
+		  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="green" />
+		  Sorry, your browser does not support inline SVG.  
+		</svg> 
+    	<br />
+    	А с гиперсылками?
+    	<br />
+		<svg height="200" width="200" xmlns:xlink="http://www.w3.org/1999/xlink">
+		  <a xlink:href="http://www.w3schools.com/svg/" target="_blank">
+			  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+		  </a>
+		  Sorry, your browser does not support inline SVG.
+		</svg>
+		<br />
+		хм.
+    </content>
+  </entry>
   <entry>
     <id>0439b637-1d4f-48bb-8717-c518a6ad7186</id>
     <title type="text">А не закодить ли 2-Way и 3-Way Diff для XML?</title>
