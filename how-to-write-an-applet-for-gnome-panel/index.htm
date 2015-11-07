@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как написать Applet для панели</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Как написать Applet для панели</h1>
+</td><td style="vertical-align:top;">
+<a href="..//index.htm">Блог Всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+Статья-туториал:
+<br />
+2004, <a href="https://projects.gnome.org/ORBit2/appletstutorial.html">https://projects.gnome.org/ORBit2/appletstutorial.html</a>
+<br />
+Исходники, очень на ту статью похожие, но ничего не объясняющие сверх того.
+<br />
+<a href="https://github.com/mate-desktop/mate-university">https://github.com/mate-desktop/mate-university</a>
+<br />
+<br />
+В чём проблема с пониманием? Отсутствуют ссылки на всё.
+Что такое <a href="bonobo.htm">Bonobo</a>, как обычно пишут Gtk+ приложения и т.д.,
+<br />
+с какой версии mate переходит на <a href="dbus.htm">DBus</a> ?
+<br />
+<br />
+<a href="http://wiki.mate-desktop.org/matecorba_to_dbus">http://wiki.mate-desktop.org/matecorba_to_dbus</a>
+<br />
+All mate-panel applets need to be ported to libmatepanelapplet-4.0 and gsettings.
+<br />
+<br />
+<a href="mate-applets.htm">mate-applets</a>
+<br />
+<br />
+Gnome Panel
+<br />
+<br />
+Technically, applets are Bonobo controls embedded in the Gnome panel.
+<br />
+each applet requires a <strong>.server</strong> file, which contains a description of the Bonobo capabilities.
+<br />
+<pre><xmp>
+<oaf_info>
+<oaf_server iid="OAFIID:ExampleApplet_Factory" type="exe"
+            location="/usr/lib/gnome-panel/myexample">
+
+        <oaf_attribute name="repo_ids" type="stringv">
+                <item value="IDL:Bonobo/GenericFactory:1.0"/>
+                <item value="IDL:Bonobo/Unknown:1.0"/>
+        </oaf_attribute>
+        <oaf_attribute name="name" type="string" value="Example Applet Factory"/> <!-- название аплета -->
+        <oaf_attribute name="description" type="string" value="Factory to create the example applet"/> <!-- описание аплета -->
+</oaf_server>
+
+<oaf_server iid="OAFIID:ExampleApplet" type="factory"
+            location="OAFIID:ExampleApplet_Factory">
+
+        <oaf_attribute name="repo_ids" type="stringv">
+                <item value="IDL:GNOME/Vertigo/PanelAppletShell:1.0"/>
+                <item value="IDL:Bonobo/Control:1.0"/>
+                <item value="IDL:Bonobo/Unknown:1.0"/>
+        </oaf_attribute>
+        <oaf_attribute name="name" type="string" value="Example Applet"/>
+        <oaf_attribute name="description" type="string" value="An example applet"/>
+        <oaf_attribute name="panel:category" type="string" value="Amusements"/>
+        <oaf_attribute name="panel:icon" type="string" value="myicon.png"/>
+</oaf_server>
+</oaf_info>
+</xmp></pre>
+Bonobo
+<br />
+/usr/lib/gnome-panel/myexample - путь до выполняемого файла
+<br />
+<strong>Example Applet Factory.server</strong> file, and is usually placed in /usr/lib/bonobo/servers/
+<br />
+<pre>
+# ls -1 /usr/lib/bonobo/servers/
+Bonobo_CosNaming_NamingContext.server
+Bonobo_Moniker_std.server
+GNOME_Moniker_std.server
+</pre>
+<br />
+How does Gnome find the link between our C code and the .server file?
+<br />
+<font style="color:red">а разве не наоборот - только что же искали бинарник по пути, записанному в .server-file
+<br />
+зачем потребовалось искать .server-файл по бинарнику?</font>
+<br />
+(они наверное хотят сказать, что адрес функции <strong>myexample_applet_fill</strong> запихивается в этот макрос)
+<br />
+<br />
+That's resolved by the call to PANEL_APPLET_BONOBO_FACTORY.
+<br />
+<br />
+<pre><xmp>
+#include <string.h>
+
+#include <panel-applet.h>
+#include <gtk/gtklabel.h>
+
+static gboolean
+myexample_applet_fill (PanelApplet *applet,
+   const gchar *iid,
+   gpointer data)
+{
+	GtkWidget *label;
+
+	if (strcmp (iid, "OAFIID:ExampleApplet") != 0)
+		return FALSE;
+
+	label = gtk_label_new ("Hello World");
+	gtk_container_add (GTK_CONTAINER (applet), label);
+
+	gtk_widget_show_all (GTK_WIDGET (applet));
+
+	return TRUE;
+}
+
+PANEL_APPLET_BONOBO_FACTORY ("OAFIID:ExampleApplet_Factory",
+                             PANEL_TYPE_APPLET,
+                             "The Hello World Applet",
+                             "0",
+                             myexample_applet_fill,
+                             NULL);
+</xmp></pre>
+
+<h2>Icon</h2>
+Our applet will be represented by the icon myicon.png, which needs to be placed in /usr/share/pixmaps/
+
+<h2>libpanel-applet library</h2>
+PKG_CONFIG_PATH environment variable must contain the path to libpanelapplet-2.0.pc
+<br />
+<br />
+bash$ PKG_CONFIG_PATH=/usr/lib/pkgconfig
+<br />
+bash$ export $PKG_CONFIG_PATH
+<br />
+bash$ gcc $(pkg-config --cflags --libs libpanelapplet-2.0) -o my_applet my_applet.c
+<br />
+possible error:
+<br />
+Package libpanelapplet-2.0 was not found in the pkg-config search path.
+<br />
+Perhaps you should add the directory containing `libpanelapplet-2.0.pc'
+<br />
+to the PKG_CONFIG_PATH environment variable
+<br />
+No package 'libpanelapplet-2.0' found
+<br />
+<br />
+
+</body>
+</html>

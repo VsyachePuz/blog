@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Bonobo</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Bonobo</h1>
+</td><td style="vertical-align:top;">
+<a href="index.htm">Как написать Applet для панели</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+<a href="https://developer.gnome.org/platform-overview/2.32/bonobo-corba.html.en">https://developer.gnome.org/platform-overview/2.32/bonobo-corba.html.en</a>
+
+<h2>Bonobo</h2>
+Bonobo is a component model for creating reusable software components and compound documents.
+<br />
+Components can be written in different languages and run on top of different runtimes;
+<br />
+they need only adhere to an interface specified with the Interface Definition Language (IDL).
+<br />
+Bonobo helps fill the gaps in CORBA, providing the additional interfaces and specifications needed to support consistent components.
+<br />
+Libbonobo Reference Manual - <a href="http://library.gnome.org/devel/libbonobo/stable/">http://library.gnome.org/devel/libbonobo/stable/</a>
+<br />
+LibbonoboUI Reference Manual - <a href="http://library.gnome.org/devel/libbonoboui/stable/">http://library.gnome.org/devel/libbonoboui/stable/</a>
+
+<h2>Corba</h2>
+<a href="https://en.wikipedia.org/wiki/Bonobo_%28component_model%29">https://en.wikipedia.org/wiki/Bonobo_(component_model)</a>
+<br />
+Bonobo is based on the CORBA architecture. 
+<br />
+Bonobo is built off of CORBA, allowing components to run in seperate processes.
+<br />
+CORBA's flexible design even allows components to run on seperate machines over a network.
+
+<h2>Usage</h2>
+Using Bonobo enables the applets to communicate effectively with the panel, affording users a consistent interface.
+<br />
+You may wish to use Bonobo to provide complex graphical components that can be embedded into applications. 
+
+<h2>ORBit</h2>
+ORBit, GNOME's CORBA implementation.
+<br />
+GNOME provides its own fast and lightweight CORBA implementation with ORBit.
+<br />
+ORBit is an incredibly fast CORBA implementation.
+<br />
+Although you will rarely need to use CORBA without Bonobo, it can be used directly.
+<br />
+For instance, GNOME's accessibility infastructure uses CORBA 
+to allow assistive tools to inspect and interact with running applications.
+<br />
+<br />
+information on ORBit - <a href="http://library.gnome.org/devel/ORBit2/stable/">http://library.gnome.org/devel/ORBit2/stable/</a>
+
+<h2>Deprecation</h2>
+The GNOME release has officially deprecated Bonobo sometime since GNOME 2.4
+<br />
+Bonobo, libIDL and ORBit have been deprecated in favor of D-Bus and other technologies.
+<br />
+Developers have been advised to use or switch to an alternative such as D-Bus
+<br />
+For most IPC needs, however, GNOME is moving towards D-Bus, as integrating D-Bus into applications is considerably easier.
+<br />
+<br />
+MATE 1.6 removes some deprecated libraries, moving from mate-conf (a fork of GConf) to GSettings,
+and from mate-corba (a fork of GNOME's Bonobo) to D-Bus.
+<br />
+Migrate from dbus-glib to GDBus
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wiki.mate-desktop.org/roadmap">http://wiki.mate-desktop.org/roadmap</a>
+
+</body>
+</html>
