@@ -13,22 +13,121 @@
 <br />
 &nbsp;
 </td></tr></table>
+<a href="http://kde-apps.org/content/show.php?content=18046">http://kde-apps.org/content/show.php?content=18046</a>
+<br />
+<a href="https://wiki.ubuntu.com/DesktopExperienceTeam/ApplicationIndicators">https://wiki.ubuntu.com/DesktopExperienceTeam/ApplicationIndicators</a>
+<br />
+<a href="http://wandathefish.com/blog">http://wandathefish.com/blog</a>
+<br />
+<a href="https://wiki.ubuntu.com/CustomStatusMenuDesignGuidelines">https://wiki.ubuntu.com/CustomStatusMenuDesignGuidelines</a>
+<br />
+<br />
 Статья-туториал:
 <br />
 2004, <a href="https://projects.gnome.org/ORBit2/appletstutorial.html">https://projects.gnome.org/ORBit2/appletstutorial.html</a>
 <br />
-Исходники, очень на ту статью похожие, но ничего не объясняющие сверх того.
+Используется другой макрос, и это позволяет работать с DBus вместо Bonobo, вот дока по этому поводу:
 <br />
-<a href="https://github.com/mate-desktop/mate-university">https://github.com/mate-desktop/mate-university</a>
+2012-12-01, <a href="http://wiki.mate-desktop.org/matecorba_to_dbus">http://wiki.mate-desktop.org/matecorba_to_dbus</a>
+<br />
+In addition to the mate-panel-applet file we use a D-Bus service file so that applets can be started by the session bus.
+<br />
+It's a normal D-Bus file <i>org.mate.panel.applet.MateWnckletFactory.service.in</i>
+<pre class="code ini"><span class="re0"><span class="br0">[</span>D-BUS Service<span class="br0">]</span></span>
+<span class="re1">Name</span><span class="sy0">=</span><span class="re2">org.mate.panel.applet.MateWnckletFactory</span>
+<span class="re1">Exec</span><span class="sy0">=</span><span class="re2">@LOCATION@</span></pre>
+<br />
+Демо-исходники, использующие новый макрос:
+<br />
+2013-03-13, <a href="https://github.com/mate-desktop/mate-university">https://github.com/mate-desktop/mate-university</a>
+<br />
+В этом примере инклюдятся заголовочные файлы:
+<br />
+#include &lt;<a href="https://github.com/mate-desktop/mate-panel/blob/master/libmate-panel-applet/mate-panel-applet.h">mate-panel-applet.h</a>&gt;
+<br />
+#include &lt;<a href="https://github.com/mate-desktop/mate-panel/blob/master/libmate-panel-applet/mate-panel-applet-gsettings.h">mate-panel-applet-gsettings.h</a>&gt;
+<br />
+И через макрос вызывается функция
+<br />
+static gboolean university_factory (<a href="https://github.com/mate-desktop/mate-panel/blob/67c9f12a0d4188b546284efec2d0cd1b90f9052d/libmate-panel-applet/mate-panel-applet.h#L70-L80">MatePanelApplet</a>* applet, const char* iid, gpointer data)
+<br />
+Надо расковырять, как работает макрос 
+<a href="https://github.com/mate-desktop/mate-panel/blob/67c9f12a0d4188b546284efec2d0cd1b90f9052d/libmate-panel-applet/mate-panel-applet.h#L150-L184">MATE_PANEL_APPLET_OUT_PROCESS_FACTORY</a>. 
+<br />
+Он реализовывает main, принимает параметры командной строки, которые передаёт в gtk,
+<br />
+и заворачивает из в Gtk-объекты.
+<br />
+внутри вызывается функция
+<a href="https://github.com/mate-desktop/mate-panel/blob/67c9f12a0d4188b546284efec2d0cd1b90f9052d/libmate-panel-applet/mate-panel-applet.c#L2552-L2594">mate_panel_applet_factory_main</a>
+<br />
+оттуда
+<br />
+<a href="https://github.com/mate-desktop/mate-panel/blob/47e68c0dc594e3d99e7955e569aa3c20f777e446/libmate-panel-applet/mate-panel-applet-factory.c#L84-L97">mate_panel_applet_factory_new</a>
+и 
+<a href="https://github.com/mate-desktop/mate-panel/blob/47e68c0dc594e3d99e7955e569aa3c20f777e446/libmate-panel-applet/mate-panel-applet-factory.c#L245-L261">mate_panel_applet_factory_register_service</a>
+<br />
+создаётся объект-структура <a href="https://github.com/mate-desktop/mate-panel/blob/47e68c0dc594e3d99e7955e569aa3c20f777e446/libmate-panel-applet/mate-panel-applet-factory.c#L26-L33">MatePanelAppletFactory</a>
+<br />
+<pre><xmp>
+struct _MatePanelAppletFactory {
+	GObject    base;
+
+	gchar     *factory_id;
+	guint      n_applets;
+	GType      applet_type;
+	GClosure  *closure;
+};
+</xmp></pre>
+указатель на функцию, обрабатывающую вызов, передаётся внутри closure (вместе с указателем на данные для функции)
+<br />
+<a href="https://github.com/mate-desktop/mate-panel/blob/67c9f12a0d4188b546284efec2d0cd1b90f9052d/libmate-panel-applet/mate-panel-applet.c#L2577">кладётся</a> в локальный-на-стеке указатель factory
+<br />
+этот указатель на объект <a href="https://github.com/mate-desktop/mate-panel/blob/47e68c0dc594e3d99e7955e569aa3c20f777e446/libmate-panel-applet/mate-panel-applet-factory.c#L251">регистрируется</a> в dbus при помощи функции
+g_bus_own_name
+<br />
+Ещё раз, что происходит:
+<br />
+1) апплет запускается как процесс (потому что это описано в метафайле для панели)
+<br />
+2) апплет создаёт сервис для dbus и регистрирует этот сервис
+<br />
+3) панель вызывает сервис через dbus, передавая ему параметры
+<br />
+Что тут неясно?
+<br />
+<font style="color:red">Как формируется параметр applet (при вызыве через dbus), то есть как описать его (независимо от C-кода, например на другом языке)?</font>
+<br />
+Where "MatePanelApplet* applet" parameter of DBus call is described?
+I want to implement DBus service on language which is not related to C,
+so I wish to see the description of DBus interface for applets.
+<br />
+<font style="color:red">Зачем нужно отдельное описание сервиса для dbus, если аплет регистрирует сервис при запуске?
+<br />
+Why one need to register his custom mate-panel-applet service in dbus with configuration file, if applet's code registers the service at startup?
+</font>
+
+
 <br />
 <br />
-В чём проблема с пониманием? Отсутствуют ссылки на всё.
+В чём проблема с пониманием? в исходном туториале отсутствуют ссылки на всё.
 Что такое <a href="bonobo.htm">Bonobo</a>, как обычно пишут Gtk+ приложения и т.д.,
+
+<h2>System Tray Protocol Specification</h2>
+<a href="http://standards.freedesktop.org/systemtray-spec/latest/">http://standards.freedesktop.org/systemtray-spec/latest/</a>
+<br />
+Чем mate-panel-applet-ы лучше чем иконки в системном трее?
+<br />
+Почему вообще существует два механизма?
+<br />
+System trays are not specific to Gnome.
+<br />
+ As a general rule, applications provide an icon by following the .
+
+
+
 <br />
 с какой версии mate переходит на <a href="dbus.htm">DBus</a> ?
-<br />
-<br />
-<a href="http://wiki.mate-desktop.org/matecorba_to_dbus">http://wiki.mate-desktop.org/matecorba_to_dbus</a>
 <br />
 All mate-panel applets need to be ported to libmatepanelapplet-4.0 and gsettings.
 <br />
