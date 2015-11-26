@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как раздавать торренты с sourceforge назло мерзким крокодилам</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Как раздавать торренты с sourceforge назло мерзким крокодилам</h1>
+</td><td style="vertical-align:top;">
+<a href="index.htm">Блог Всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+1. Сначала нужно создать .iso-шник.
+<br />
+поскольку им всё равно никто пользоваться не будет, то создадим его командой
+<br />
+dd if=/dev/zero of=/home/user/cheburunix/image.iso bs=1048576 count=3425
+<br />
+(я не помню, надо ли тут задавать какие-нибудь преобразования conv=, чтобы не было преобразований по-умолчанию)
+<br />
+<br />
+2. Затем надо залить его на sourceforge, чтобы понять, какой будет URL
+<br />
+<a href="http://sourceforge.net/p/forge/documentation/Mirrors/">http://sourceforge.net/p/forge/documentation/Mirrors/</a>
+<br />
+Как заливать, написано тут:
+<br />
+<a href="http://sourceforge.net/p/forge/documentation/Files/">http://sourceforge.net/p/forge/documentation/Files/</a>
+<br />
+<font style="color:red">(И что конкретно там написано? скопировал бы)</font>
+<br />
+rsync allows for resuming canceled or interrupted transfers.
+<br />
+Moving files and creating of symlinks may be accomplished via the shell, but cannot be done with the web file manager.
+<br />
+<br />
+Как может выглядеть линк:
+<br />
+http://downloads.sourceforge.net/openjade/openjade-0.6.14.tar.gz
+<br />
+<br />
+в общем, торренты получились такие:
+<br />
+mktorrent -w http://downloads.sourceforge.net/project/skliss/Rel_1/image.iso image.iso -a http://tracker.openbittorrent.com:80/announce -o image.torrent
+<br />
+<a href="mktorrent/image.torrent">image.torrent</a>
+<br />
+mktorrent -w http://downloads.sourceforge.net/project/skliss/Rel_1/image.iso image.iso -a udp://tracker.openbittorrent.com:80 -o skliss.torrent
+<br />
+<a href="mktorrent/skliss.torrent">skliss.torrent</a>
+<br />
+
+
+</body>
+</html>

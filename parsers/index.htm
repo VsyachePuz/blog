@@ -1,0 +1,413 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Про парсеры</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Про парсеры</h1>
+</td><td style="vertical-align:top;">
+<a href="../index.htm">Блог Всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+<h1 id="firstHeading" class="firstHeading" lang="ru">Категория:ParserGenerators</h1>
+						<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">Материал из My Gentoo Wiki</div>
+								<div id="contentSub"></div>
+
+
+<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="ru">ANTLR</h1>
+						<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">Материал из My Gentoo Wiki</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Перейти к:					<a href="#mw-head">навигация</a>, 					<a href="#p-search">поиск</a>
+				</div>
+				<div id="mw-content-text" dir="ltr" class="mw-content-ltr" lang="ru"><p>ANother Tool for Language Recognition
+</p>
+<div id="toc" class="toc"><div id="toctitle"><h2>Содержание</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#.D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.BE.D0.B2"><span class="tocnumber">1</span> <span class="toctext">Типы используемых алгоритмов</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#.D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.22.D0.BC.D0.B5.D1.85.D0.B0.D0.BD.D0.B8.D0.B7.D0.BC.D0.BE.D0.B2.22"><span class="tocnumber">2</span> <span class="toctext">Типы используемых "механизмов"</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#.D0.BF.D0.BE.D0.BD.D0.B8.D0.BC.D0.B0.D0.B5.D0.BC.D1.8B.D0.B5_.D0.B3.D1.80.D0.B0.D0.BC.D0.BC.D0.B0.D1.82.D0.B8.D0.BA.D0.B8"><span class="tocnumber">3</span> <span class="toctext">понимаемые грамматики</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#.D1.86.D0.B5.D0.BB.D0.B5.D0.B2.D1.8B.D0.B5_.D1.8F.D0.B7.D1.8B.D0.BA.D0.B8"><span class="tocnumber">4</span> <span class="toctext">целевые языки</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#.D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8"><span class="tocnumber">5</span> <span class="toctext">Ссылки</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#.D0.9A.D0.BE.D0.BC.D0.BC.D1.8C.D1.8E.D0.BD.D0.B8.D1.82.D0.B8"><span class="tocnumber">6</span> <span class="toctext">Коммьюнити</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#.D0.9A.D0.B0.D0.BA_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.B0.D0.B2.D0.BB.D0.B8.D0.B2.D0.B0.D1.82.D1.8C"><span class="tocnumber">7</span> <span class="toctext">Как устанавливать</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#.D0.9E.D0.B3.D1.80.D0.B0.D0.BD.D0.B8.D1.87.D0.B5.D0.BD.D0.B8.D1.8F"><span class="tocnumber">8</span> <span class="toctext">Ограничения</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id=".D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.BE.D0.B2">Типы используемых алгоритмов</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=ANTLR&amp;action=edit&amp;section=1" title="Редактировать раздел «Типы используемых алгоритмов»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>В основе ANTLR 4 лежит ALL(*)-алгоритм adaptive LL(*) который переносит анализ грамматики на время исполнения
+</p>
+<ul><li> <a rel="nofollow" class="external free" href="http://www.antlr.org/papers/allstar-techreport.pdf">http://www.antlr.org/papers/allstar-techreport.pdf</a></li></ul>
+<p>для ANTRL3 использовался LL(*)
+</p>
+<ul><li> <a rel="nofollow" class="external free" href="http://www.antlr.org/papers/LL-star-PLDI11.pdf">http://www.antlr.org/papers/LL-star-PLDI11.pdf</a></li></ul>
+<p>adaptive algorithm is much stronger than the static LL(*) grammar analysis algorithm in v3
+</p>
+<h2><span class="mw-headline" id=".D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.22.D0.BC.D0.B5.D1.85.D0.B0.D0.BD.D0.B8.D0.B7.D0.BC.D0.BE.D0.B2.22">Типы используемых "механизмов"</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=ANTLR&amp;action=edit&amp;section=2" title="Редактировать раздел «Типы используемых &quot;механизмов&quot;»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>ANTLR automatically can build parse trees for you and generate listeners and visitors.
+This is not only a huge productivity win, but also an important step forward in building grammars that don't depend on embedded actions.
+If we keep all of the actions out of the grammar and put them into external visitors, we can reuse the same grammar to generate code in any language for which we have an ANTLR target.
+</p><p>The biggest problem for the average practitioner is that most parser generators do not produce code you can load into a debugger and step through.
+This immediately removes bottom-up parser generators and the really powerful GLR parser generators from consideration by the average programmer.
+</p>
+<h2><span class="mw-headline" id=".D0.BF.D0.BE.D0.BD.D0.B8.D0.BC.D0.B0.D0.B5.D0.BC.D1.8B.D0.B5_.D0.B3.D1.80.D0.B0.D0.BC.D0.BC.D0.B0.D1.82.D0.B8.D0.BA.D0.B8">понимаемые грамматики</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=ANTLR&amp;action=edit&amp;section=3" title="Редактировать раздел «понимаемые грамматики»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>EBNF - <a rel="nofollow" class="external free" href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form</a>
+</p>
+<h2><span class="mw-headline" id=".D1.86.D0.B5.D0.BB.D0.B5.D0.B2.D1.8B.D0.B5_.D1.8F.D0.B7.D1.8B.D0.BA.D0.B8">целевые языки</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=ANTLR&amp;action=edit&amp;section=4" title="Редактировать раздел «целевые языки»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> C++</li>
+<li> Java</li>
+<li> C#</li>
+<li> Python</li>
+<li> Ruby</li></ul>
+<h2><span class="mw-headline" id=".D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8">Ссылки</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=ANTLR&amp;action=edit&amp;section=5" title="Редактировать раздел «Ссылки»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> Исходники - <a rel="nofollow" class="external free" href="https://github.com/antlr/antlr4">https://github.com/antlr/antlr4</a></li>
+<li> прямые web-ссылки на строчки исходного кода - там же</li>
+<li> Документация - <a rel="nofollow" class="external free" href="https://theantlrguy.atlassian.net/wiki/display/ANTLR4/ANTLR+4+Documentation">https://theantlrguy.atlassian.net/wiki/display/ANTLR4/ANTLR+4+Documentation</a></li>
+<li> для задавания новичковых вопросов:
+<ul><li> IRC-канал - oftc.net, канал #antlr</li>
+<li> Google-группы - <a rel="nofollow" class="external free" href="https://groups.google.com/forum/#!forum/antlr-discussion">https://groups.google.com/forum/#!forum/antlr-discussion</a></li>
+<li> тег antlr4 на stackoverflow - <a rel="nofollow" class="external free" href="http://stackoverflow.com/tags/antlr4/info">http://stackoverflow.com/tags/antlr4/info</a></li></ul></li>
+<li> Репортить баги - <a rel="nofollow" class="external free" href="https://github.com/antlr/antlr4/issues">https://github.com/antlr/antlr4/issues</a></li>
+<li> Домашняя страница проекта - <a rel="nofollow" class="external free" href="http://www.antlr.org/">http://www.antlr.org/</a></li>
+<li> Страницы в википедии:
+<ul><li> русскоязычная - <a rel="nofollow" class="external free" href="https://ru.wikipedia.org/wiki/ANTLR">https://ru.wikipedia.org/wiki/ANTLR</a></li>
+<li> англоязычная - <a rel="nofollow" class="external free" href="https://en.wikipedia.org/wiki/ANTLR">https://en.wikipedia.org/wiki/ANTLR</a></li></ul></li>
+<li> Инструкция для опакечивания - <a rel="nofollow" class="external free" href="https://github.com/antlr/antlr4/wiki/How-to-build-ANTLR-itself">https://github.com/antlr/antlr4/wiki/How-to-build-ANTLR-itself</a></li></ul>
+<h2><span class="mw-headline" id=".D0.9A.D0.BE.D0.BC.D0.BC.D1.8C.D1.8E.D0.BD.D0.B8.D1.82.D0.B8">Коммьюнити</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=ANTLR&amp;action=edit&amp;section=6" title="Редактировать раздел «Коммьюнити»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Terence Parr = мейнтейнер, профессор в University of San Francisco.
+</p><p>v4 is the culmination of 25 years of research into parsers and parser generators.
+</p><p>Поэтому когда вам кто-то говорит (а мне говорили), что распарсить что-то может любой студент за час... Ну может, если вы ему методику предоставите (и я распарсил, GOLD-парсером, за час, только они с ним запарились ПОТОМ).
+</p>
+<h2><span class="mw-headline" id=".D0.9A.D0.B0.D0.BA_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.B0.D0.B2.D0.BB.D0.B8.D0.B2.D0.B0.D1.82.D1.8C">Как устанавливать</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=ANTLR&amp;action=edit&amp;section=7" title="Редактировать раздел «Как устанавливать»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Есть пакет dev-java/antlr-4.4, номер последней версии можно посмотреть на <a rel="nofollow" class="external free" href="http://gpo.zugaina.org/Search?search=antlr">http://gpo.zugaina.org/Search?search=antlr</a>
+</p><p>Ссылаться на строчки из ebuild-файла можно тут - <a rel="nofollow" class="external free" href="https://github.com/gentoo/gentoo/tree/master/sys-devel/bison">https://github.com/gentoo/gentoo/tree/master/sys-devel/bison</a>
+</p><p>Команды на установку:
+</p>
+<ul><li> portage - <a rel="nofollow" class="external free" href="https://wiki.gentoo.org/wiki/Gentoo_Cheat_Sheet#Package_installation_and_removal">https://wiki.gentoo.org/wiki/Gentoo_Cheat_Sheet#Package_installation_and_removal</a></li></ul>
+<pre>emerge antlr
+</pre>
+<ul><li> paludis - <a rel="nofollow" class="external free" href="http://paludis.exherbo.org/clients/cave-resolve.html">http://paludis.exherbo.org/clients/cave-resolve.html</a></li></ul>
+<pre>cave resolve antlr
+</pre>
+<ul><li> entropy - <a rel="nofollow" class="external free" href="https://wiki.sabayon.org/index.php?title=En:List_Of_Equo_Functions#install_.5Bi.5D">https://wiki.sabayon.org/index.php?title=En:List_Of_Equo_Functions#install_.5Bi.5D</a></li></ul>
+<pre>equo i antlr
+</pre>
+<h2><span class="mw-headline" id=".D0.9E.D0.B3.D1.80.D0.B0.D0.BD.D0.B8.D1.87.D0.B5.D0.BD.D0.B8.D1.8F">Ограничения</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=ANTLR&amp;action=edit&amp;section=8" title="Редактировать раздел «Ограничения»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>ANTLR 4 deals with left recursion correctly (except for indirect left recursion, i.e. grammars rules x which refer to y which refer to x)
+</p><p>Лицензионные ограничения версии Antlr3 были убраны в Antrl4 - <a rel="nofollow" class="external free" href="https://theantlrguy.atlassian.net/wiki/pages/viewpage.action?pageId=1900547">https://theantlrguy.atlassian.net/wiki/pages/viewpage.action?pageId=1900547</a>
+</p><p>some languages are so complicated, such as C++, that parser generators might build parsers slower than compiler developers want.
+The compiler developers also like the control of a recursive-descent parser for predicating the parse to handle context-sensitive constructs such as T(i) in C++.
+</p>
+<!-- 
+NewPP limit report
+CPU time usage: 0.022 seconds
+Real time usage: 0.027 seconds
+Preprocessor visited node count: 31/1000000
+Preprocessor generated node count: 36/1000000
+PostĎxpand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+-->
+
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 - -total
+-->
+
+<!-- Saved in parser cache with key genfunwiki:pcache:idhash:593-0!*!*!!ru!*!* and timestamp 20151120115012 and revision id 718
+ -->
+</div>									<div class="printfooter">
+						Источник — «<a dir="ltr" href="http://wiki.gentoo-fun.info/index.php?title=ANTLR&amp;oldid=718">http://wiki.gentoo-fun.info/index.php?title=ANTLR&amp;oldid=718</a>»					</div>
+													<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/index.php/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D0%B8" title="Служебная:Категории">Категория</a>: <ul><li><a href="/index.php/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:ParserGenerators" title="Категория:ParserGenerators">ParserGenerators</a></li></ul></div></div>												<div class="visualClear"></div>
+							</div>
+		</div>
+
+
+
+<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="ru">Bison</h1>
+						<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">Материал из My Gentoo Wiki</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Перейти к:					<a href="#mw-head">навигация</a>, 					<a href="#p-search">поиск</a>
+				</div>
+				<div id="mw-content-text" dir="ltr" class="mw-content-ltr" lang="ru"><div id="toc" class="toc"><div id="toctitle"><h2>Содержание</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#.D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.BE.D0.B2"><span class="tocnumber">1</span> <span class="toctext">Типы используемых алгоритмов</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#.D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.22.D0.BC.D0.B5.D1.85.D0.B0.D0.BD.D0.B8.D0.B7.D0.BC.D0.BE.D0.B2.22"><span class="tocnumber">2</span> <span class="toctext">Типы используемых "механизмов"</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#.D0.BF.D0.BE.D0.BD.D0.B8.D0.BC.D0.B0.D0.B5.D0.BC.D1.8B.D0.B5_.D0.B3.D1.80.D0.B0.D0.BC.D0.BC.D0.B0.D1.82.D0.B8.D0.BA.D0.B8"><span class="tocnumber">3</span> <span class="toctext">понимаемые грамматики</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#.D1.86.D0.B5.D0.BB.D0.B5.D0.B2.D1.8B.D0.B5_.D1.8F.D0.B7.D1.8B.D0.BA.D0.B8"><span class="tocnumber">4</span> <span class="toctext">целевые языки</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#.D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8"><span class="tocnumber">5</span> <span class="toctext">Ссылки</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#.D0.9A.D0.B0.D0.BA_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.B0.D0.B2.D0.BB.D0.B8.D0.B2.D0.B0.D1.82.D1.8C"><span class="tocnumber">6</span> <span class="toctext">Как устанавливать</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id=".D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.BE.D0.B2">Типы используемых алгоритмов</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Bison&amp;action=edit&amp;section=1" title="Редактировать раздел «Типы используемых алгоритмов»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> LR</li>
+<li> GLR</li></ul>
+<h2><span class="mw-headline" id=".D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.22.D0.BC.D0.B5.D1.85.D0.B0.D0.BD.D0.B8.D0.B7.D0.BC.D0.BE.D0.B2.22">Типы используемых "механизмов"</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Bison&amp;action=edit&amp;section=2" title="Редактировать раздел «Типы используемых &quot;механизмов&quot;»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> LR(1) parser tables (canonical)</li>
+<li> LALR(1) parser tables. </li>
+<li> IELR(1) </li></ul>
+<h2><span class="mw-headline" id=".D0.BF.D0.BE.D0.BD.D0.B8.D0.BC.D0.B0.D0.B5.D0.BC.D1.8B.D0.B5_.D0.B3.D1.80.D0.B0.D0.BC.D0.BC.D0.B0.D1.82.D0.B8.D0.BA.D0.B8">понимаемые грамматики</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Bison&amp;action=edit&amp;section=3" title="Редактировать раздел «понимаемые грамматики»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Bison понимает все грамматики, написанные для Yacc без их дополнительных доработок
+</p>
+<h2><span class="mw-headline" id=".D1.86.D0.B5.D0.BB.D0.B5.D0.B2.D1.8B.D0.B5_.D1.8F.D0.B7.D1.8B.D0.BA.D0.B8">целевые языки</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Bison&amp;action=edit&amp;section=4" title="Редактировать раздел «целевые языки»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> C</li>
+<li> C++</li>
+<li> Java</li></ul>
+<h2><span class="mw-headline" id=".D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8">Ссылки</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Bison&amp;action=edit&amp;section=5" title="Редактировать раздел «Ссылки»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> Исходники - <a rel="nofollow" class="external free" href="http://savannah.gnu.org/projects/bison/">http://savannah.gnu.org/projects/bison/</a></li>
+<li> прямые web-ссылки на строчки исходного кода - <a rel="nofollow" class="external free" href="http://git.savannah.gnu.org/cgit/bison.git">http://git.savannah.gnu.org/cgit/bison.git</a></li>
+<li> Документация - <a rel="nofollow" class="external free" href="https://www.gnu.org/software/bison/manual/">https://www.gnu.org/software/bison/manual/</a></li>
+<li> рассылка для задавания новичковых вопросов - <a rel="nofollow" class="external free" href="https://lists.gnu.org/mailman/listinfo/help-bison">https://lists.gnu.org/mailman/listinfo/help-bison</a></li>
+<li> Репортить баги - <a rel="nofollow" class="external free" href="https://lists.gnu.org/mailman/listinfo/bug-bison">https://lists.gnu.org/mailman/listinfo/bug-bison</a></li>
+<li> Домашняя страница проекта - <a rel="nofollow" class="external free" href="https://www.gnu.org/software/bison/">https://www.gnu.org/software/bison/</a></li></ul>
+<h2><span class="mw-headline" id=".D0.9A.D0.B0.D0.BA_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.B0.D0.B2.D0.BB.D0.B8.D0.B2.D0.B0.D1.82.D1.8C">Как устанавливать</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Bison&amp;action=edit&amp;section=6" title="Редактировать раздел «Как устанавливать»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Есть пакет sys-devel/bison-3.0.4-r1, номер последней версии можно посмотреть на <a rel="nofollow" class="external free" href="http://gpo.zugaina.org/Search?search=bison">http://gpo.zugaina.org/Search?search=bison</a>
+</p><p>Ссылаться на строчки из ebuild-файла можно тут - <a rel="nofollow" class="external free" href="https://github.com/gentoo/gentoo/tree/master/sys-devel/bison">https://github.com/gentoo/gentoo/tree/master/sys-devel/bison</a>
+</p><p>Команды на установку:
+</p>
+<ul><li> portage - <a rel="nofollow" class="external free" href="https://wiki.gentoo.org/wiki/Gentoo_Cheat_Sheet#Package_installation_and_removal">https://wiki.gentoo.org/wiki/Gentoo_Cheat_Sheet#Package_installation_and_removal</a></li></ul>
+<pre>emerge bison
+</pre>
+<ul><li> paludis - <a rel="nofollow" class="external free" href="http://paludis.exherbo.org/clients/cave-resolve.html">http://paludis.exherbo.org/clients/cave-resolve.html</a></li></ul>
+<pre>cave resolve bison
+</pre>
+<ul><li> entropy - <a rel="nofollow" class="external free" href="https://wiki.sabayon.org/index.php?title=En:List_Of_Equo_Functions#install_.5Bi.5D">https://wiki.sabayon.org/index.php?title=En:List_Of_Equo_Functions#install_.5Bi.5D</a></li></ul>
+<pre>equo i bison
+</pre>
+<!-- 
+NewPP limit report
+CPU time usage: 0.016 seconds
+Real time usage: 0.016 seconds
+Preprocessor visited node count: 22/1000000
+Preprocessor generated node count: 28/1000000
+PostĎxpand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+-->
+
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 - -total
+-->
+
+<!-- Saved in parser cache with key genfunwiki:pcache:idhash:591-0!*!*!!ru!*!* and timestamp 20151120115045 and revision id 715
+ -->
+</div>									<div class="printfooter">
+						Источник — «<a dir="ltr" href="http://wiki.gentoo-fun.info/index.php?title=Bison&amp;oldid=715">http://wiki.gentoo-fun.info/index.php?title=Bison&amp;oldid=715</a>»					</div>
+													<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/index.php/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D0%B8" title="Служебная:Категории">Категория</a>: <ul><li><a href="/index.php/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:ParserGenerators" title="Категория:ParserGenerators">ParserGenerators</a></li></ul></div></div>												<div class="visualClear"></div>
+							</div>
+		</div>
+
+<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="ru">Eto.Parse</h1>
+						<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">Материал из My Gentoo Wiki</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Перейти к:					<a href="#mw-head">навигация</a>, 					<a href="#p-search">поиск</a>
+				</div>
+				<div id="mw-content-text" dir="ltr" class="mw-content-ltr" lang="ru"><div id="toc" class="toc"><div id="toctitle"><h2>Содержание</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#.D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.BE.D0.B2"><span class="tocnumber">1</span> <span class="toctext">Типы используемых алгоритмов</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#.D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.22.D0.BC.D0.B5.D1.85.D0.B0.D0.BD.D0.B8.D0.B7.D0.BC.D0.BE.D0.B2.22"><span class="tocnumber">2</span> <span class="toctext">Типы используемых "механизмов"</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#.D0.BF.D0.BE.D0.BD.D0.B8.D0.BC.D0.B0.D0.B5.D0.BC.D1.8B.D0.B5_.D0.B3.D1.80.D0.B0.D0.BC.D0.BC.D0.B0.D1.82.D0.B8.D0.BA.D0.B8"><span class="tocnumber">3</span> <span class="toctext">понимаемые грамматики</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#.D1.86.D0.B5.D0.BB.D0.B5.D0.B2.D1.8B.D0.B5_.D1.8F.D0.B7.D1.8B.D0.BA.D0.B8"><span class="tocnumber">4</span> <span class="toctext">целевые языки</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#.D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8"><span class="tocnumber">5</span> <span class="toctext">Ссылки</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#.D0.9A.D0.BE.D0.BC.D0.BC.D1.8C.D1.8E.D0.BD.D0.B8.D1.82.D0.B8"><span class="tocnumber">6</span> <span class="toctext">Коммьюнити</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#.D0.9A.D0.B0.D0.BA_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.B0.D0.B2.D0.BB.D0.B8.D0.B2.D0.B0.D1.82.D1.8C"><span class="tocnumber">7</span> <span class="toctext">Как устанавливать</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#.D0.9E.D0.B3.D1.80.D0.B0.D0.BD.D0.B8.D1.87.D0.B5.D0.BD.D0.B8.D1.8F"><span class="tocnumber">8</span> <span class="toctext">Ограничения</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id=".D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.BE.D0.B2">Типы используемых алгоритмов</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Eto.Parse&amp;action=edit&amp;section=1" title="Редактировать раздел «Типы используемых алгоритмов»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>LL(k)
+</p>
+<h2><span class="mw-headline" id=".D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.22.D0.BC.D0.B5.D1.85.D0.B0.D0.BD.D0.B8.D0.B7.D0.BC.D0.BE.D0.B2.22">Типы используемых "механизмов"</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Eto.Parse&amp;action=edit&amp;section=2" title="Редактировать раздел «Типы используемых &quot;механизмов&quot;»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Fluent API
+</p>
+<h2><span class="mw-headline" id=".D0.BF.D0.BE.D0.BD.D0.B8.D0.BC.D0.B0.D0.B5.D0.BC.D1.8B.D0.B5_.D0.B3.D1.80.D0.B0.D0.BC.D0.BC.D0.B0.D1.82.D0.B8.D0.BA.D0.B8">понимаемые грамматики</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Eto.Parse&amp;action=edit&amp;section=3" title="Редактировать раздел «понимаемые грамматики»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> BNF</li>
+<li> EBNF - <a rel="nofollow" class="external free" href="https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form</a></li>
+<li> грамматика Gold Parser</li></ul>
+<h2><span class="mw-headline" id=".D1.86.D0.B5.D0.BB.D0.B5.D0.B2.D1.8B.D0.B5_.D1.8F.D0.B7.D1.8B.D0.BA.D0.B8">целевые языки</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Eto.Parse&amp;action=edit&amp;section=4" title="Редактировать раздел «целевые языки»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> C#</li></ul>
+<h2><span class="mw-headline" id=".D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8">Ссылки</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Eto.Parse&amp;action=edit&amp;section=5" title="Редактировать раздел «Ссылки»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> Исходники - <a rel="nofollow" class="external free" href="https://github.com/picoe/Eto.Parse">https://github.com/picoe/Eto.Parse</a></li>
+<li> прямые web-ссылки на строчки исходного кода - там же</li>
+<li> Документация - не обнаружена</li>
+<li> для задавания новичковых вопросов:
+<ul><li> IRC-каналы - freenode, канал #eto.parse  - irc.gitter.im, канал #picoe/Eto.Parse</li>
+<li> Google-группы - <a rel="nofollow" class="external free" href="https://groups.google.com/forum/#!forum/eto-parse">https://groups.google.com/forum/#!forum/eto-parse</a></li></ul></li>
+<li> Репортить баги - <a rel="nofollow" class="external free" href="https://github.com/picoe/Eto.Parse/issues">https://github.com/picoe/Eto.Parse/issues</a></li>
+<li> Страницы в википедии:
+<ul><li> англоязычная - отсутстсвует, но упоминается на странице про сравнение парсеров (<a rel="nofollow" class="external free" href="https://en.wikipedia.org/wiki/Comparison_of_parser_generators">https://en.wikipedia.org/wiki/Comparison_of_parser_generators</a>)</li></ul></li>
+<li> Исходники ebuild-ов - <a rel="nofollow" class="external free" href="https://github.com/gentoo/dotnet/tree/master/dev-dotnet/eto-parse">https://github.com/gentoo/dotnet/tree/master/dev-dotnet/eto-parse</a></li></ul>
+<h2><span class="mw-headline" id=".D0.9A.D0.BE.D0.BC.D0.BC.D1.8C.D1.8E.D0.BD.D0.B8.D1.82.D0.B8">Коммьюнити</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Eto.Parse&amp;action=edit&amp;section=6" title="Редактировать раздел «Коммьюнити»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Curtis Wensley, Vancouver, BC Canada (<a rel="nofollow" class="external free" href="https://github.com/cwensley">https://github.com/cwensley</a>), просто девелопер, к университетам вроде не относится
+</p>
+<h2><span class="mw-headline" id=".D0.9A.D0.B0.D0.BA_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.B0.D0.B2.D0.BB.D0.B8.D0.B2.D0.B0.D1.82.D1.8C">Как устанавливать</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Eto.Parse&amp;action=edit&amp;section=7" title="Редактировать раздел «Как устанавливать»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Есть пакет dev-dotnet/eto-parse-1.4.0, номер последней версии можно посмотреть на <a rel="nofollow" class="external free" href="http://gpo.zugaina.org/dev-dotnet/eto-parse">http://gpo.zugaina.org/dev-dotnet/eto-parse</a>
+</p><p>Команды на установку:
+</p>
+<ul><li> portage - <a rel="nofollow" class="external free" href="https://wiki.gentoo.org/wiki/Gentoo_Cheat_Sheet#Package_installation_and_removal">https://wiki.gentoo.org/wiki/Gentoo_Cheat_Sheet#Package_installation_and_removal</a></li></ul>
+<pre>emerge layman
+layman -L
+layman -a dotnet
+emerge eto-parse
+</pre>
+<h2><span class="mw-headline" id=".D0.9E.D0.B3.D1.80.D0.B0.D0.BD.D0.B8.D1.87.D0.B5.D0.BD.D0.B8.D1.8F">Ограничения</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Eto.Parse&amp;action=edit&amp;section=8" title="Редактировать раздел «Ограничения»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Если надо парсить грамматику с явными пробелами, то есть разница между использованием = и&nbsp;:= в правилах EBNF.
+</p>
+<!-- 
+NewPP limit report
+CPU time usage: 0.018 seconds
+Real time usage: 0.021 seconds
+Preprocessor visited node count: 30/1000000
+Preprocessor generated node count: 36/1000000
+PostĎxpand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+-->
+
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 - -total
+-->
+
+<!-- Saved in parser cache with key genfunwiki:pcache:idhash:594-0!*!*!!ru!*!* and timestamp 20151120105038 and revision id 722
+ -->
+</div>									<div class="printfooter">
+						Источник — «<a dir="ltr" href="http://wiki.gentoo-fun.info/index.php?title=Eto.Parse&amp;oldid=722">http://wiki.gentoo-fun.info/index.php?title=Eto.Parse&amp;oldid=722</a>»					</div>
+													<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/index.php/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D0%B8" title="Служебная:Категории">Категория</a>: <ul><li><a href="/index.php/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:ParserGenerators" title="Категория:ParserGenerators">ParserGenerators</a></li></ul></div></div>												<div class="visualClear"></div>
+							</div>
+		</div>
+
+
+<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="ru">Nitra</h1>
+						<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">Материал из My Gentoo Wiki</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Перейти к:					<a href="#mw-head">навигация</a>, 					<a href="#p-search">поиск</a>
+				</div>
+				<div id="mw-content-text" dir="ltr" class="mw-content-ltr" lang="ru"><div id="toc" class="toc"><div id="toctitle"><h2>Содержание</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#.D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.BE.D0.B2"><span class="tocnumber">1</span> <span class="toctext">Типы используемых алгоритмов</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#.D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.22.D0.BC.D0.B5.D1.85.D0.B0.D0.BD.D0.B8.D0.B7.D0.BC.D0.BE.D0.B2.22"><span class="tocnumber">2</span> <span class="toctext">Типы используемых "механизмов"</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#.D0.BF.D0.BE.D0.BD.D0.B8.D0.BC.D0.B0.D0.B5.D0.BC.D1.8B.D0.B5_.D0.B3.D1.80.D0.B0.D0.BC.D0.BC.D0.B0.D1.82.D0.B8.D0.BA.D0.B8"><span class="tocnumber">3</span> <span class="toctext">понимаемые грамматики</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#.D1.86.D0.B5.D0.BB.D0.B5.D0.B2.D1.8B.D0.B5_.D1.8F.D0.B7.D1.8B.D0.BA.D0.B8"><span class="tocnumber">4</span> <span class="toctext">целевые языки</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#.D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8"><span class="tocnumber">5</span> <span class="toctext">Ссылки</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#.D0.9A.D0.BE.D0.BC.D0.BC.D1.8C.D1.8E.D0.BD.D0.B8.D1.82.D0.B8"><span class="tocnumber">6</span> <span class="toctext">Коммьюнити</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#.D0.9A.D0.B0.D0.BA_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.B0.D0.B2.D0.BB.D0.B8.D0.B2.D0.B0.D1.82.D1.8C"><span class="tocnumber">7</span> <span class="toctext">Как устанавливать</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#.D0.9E.D0.B3.D1.80.D0.B0.D0.BD.D0.B8.D1.87.D0.B5.D0.BD.D0.B8.D1.8F"><span class="tocnumber">8</span> <span class="toctext">Ограничения</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id=".D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.D0.B0.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC.D0.BE.D0.B2">Типы используемых алгоритмов</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Nitra&amp;action=edit&amp;section=1" title="Редактировать раздел «Типы используемых алгоритмов»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Поддержка неоднозначных грамматик (когда две ветви спарсили одинаковый набор токенов).
+Автоматическое разрешение неоднозначностей.
+</p>
+<h2><span class="mw-headline" id=".D0.A2.D0.B8.D0.BF.D1.8B_.D0.B8.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D1.83.D0.B5.D0.BC.D1.8B.D1.85_.22.D0.BC.D0.B5.D1.85.D0.B0.D0.BD.D0.B8.D0.B7.D0.BC.D0.BE.D0.B2.22">Типы используемых "механизмов"</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Nitra&amp;action=edit&amp;section=2" title="Редактировать раздел «Типы используемых &quot;механизмов&quot;»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>uses PEGs
+The main feature of PEGs that allows this is that the ordered choice operator (|) - the correct parse depends on the order you specify alternations
+</p><p>инкрементальный подход.
+компилятор кеширует почти все промежуточные результаты своей работы: результаты компиляции отдельных файлов, их синтаксические деревья и даже отдельные лексемы языка.
+переразбирает только какой-то локальный фрагмент кода вокруг изменений.
+</p><p>Безлексерный парсер – позволяет легко разбирать языки с несколькими лексическими контекстами, такие как XML.
+</p>
+<h2><span class="mw-headline" id=".D0.BF.D0.BE.D0.BD.D0.B8.D0.BC.D0.B0.D0.B5.D0.BC.D1.8B.D0.B5_.D0.B3.D1.80.D0.B0.D0.BC.D0.BC.D0.B0.D1.82.D0.B8.D0.BA.D0.B8">понимаемые грамматики</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Nitra&amp;action=edit&amp;section=3" title="Редактировать раздел «понимаемые грамматики»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p><a rel="nofollow" class="external free" href="https://confluence.jetbrains.com/display/Nitra/Syntax">https://confluence.jetbrains.com/display/Nitra/Syntax</a>
+</p>
+<pre>(Nitra’s grammar syntax is highly reminiscent of BNF
+Язык описания парсеров Nitra, в отличие от BNF, описывает также и AST.)
+</pre>
+<p><a rel="nofollow" class="external free" href="https://rsdn.ru/article/nitra/Nitra-doc5.xml">https://rsdn.ru/article/nitra/Nitra-doc5.xml</a>
+</p>
+<h2><span class="mw-headline" id=".D1.86.D0.B5.D0.BB.D0.B5.D0.B2.D1.8B.D0.B5_.D1.8F.D0.B7.D1.8B.D0.BA.D0.B8">целевые языки</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Nitra&amp;action=edit&amp;section=4" title="Редактировать раздел «целевые языки»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>?
+</p>
+<h2><span class="mw-headline" id=".D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8">Ссылки</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Nitra&amp;action=edit&amp;section=5" title="Редактировать раздел «Ссылки»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul><li> Исходники - <a rel="nofollow" class="external free" href="https://github.com/JetBrains/Nitra">https://github.com/JetBrains/Nitra</a></li>
+<li> прямые web-ссылки на строчки исходного кода - там же</li>
+<li> Документация - <a rel="nofollow" class="external free" href="http://confluence.jetbrains.com/display/Nitra/Home">http://confluence.jetbrains.com/display/Nitra/Home</a>
+<ul><li> <a rel="nofollow" class="external free" href="http://blog.jetbrains.com/blog/2013/11/12/an-introduction-to-nitra/">http://blog.jetbrains.com/blog/2013/11/12/an-introduction-to-nitra/</a></li>
+<li> <a rel="nofollow" class="external free" href="http://blog.jetbrains.com/blog/2014/05/27/nitra-goes-open-source/">http://blog.jetbrains.com/blog/2014/05/27/nitra-goes-open-source/</a></li>
+<li> <a rel="nofollow" class="external free" href="http://timjones.tw/blog/archive/2014/11/24/getting-started-with-jetbrains-nitra">http://timjones.tw/blog/archive/2014/11/24/getting-started-with-jetbrains-nitra</a></li>
+<li> <a rel="nofollow" class="external free" href="http://habrahabr.ru/post/201774/">http://habrahabr.ru/post/201774/</a></li>
+<li> twitter - <a rel="nofollow" class="external free" href="http://twitter.com/nitra">http://twitter.com/nitra</a></li></ul></li>
+<li> для задавания новичковых вопросов:
+<ul><li> IRC-каналы -&nbsp;?</li>
+<li> Google-группы -&nbsp;?</li></ul></li>
+<li> Репортить баги - <a rel="nofollow" class="external free" href="https://youtrack.jetbrains.com/issues/NTR">https://youtrack.jetbrains.com/issues/NTR</a></li>
+<li> Страницы в википедии:
+<ul><li> англоязычная -&nbsp;?</li></ul></li>
+<li> Исходники ebuild-ов -&nbsp;?</li></ul>
+<h2><span class="mw-headline" id=".D0.9A.D0.BE.D0.BC.D0.BC.D1.8C.D1.8E.D0.BD.D0.B8.D1.82.D0.B8">Коммьюнити</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Nitra&amp;action=edit&amp;section=6" title="Редактировать раздел «Коммьюнити»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>?
+</p>
+<h2><span class="mw-headline" id=".D0.9A.D0.B0.D0.BA_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.B0.D0.B2.D0.BB.D0.B8.D0.B2.D0.B0.D1.82.D1.8C">Как устанавливать</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Nitra&amp;action=edit&amp;section=7" title="Редактировать раздел «Как устанавливать»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>?
+</p>
+<h2><span class="mw-headline" id=".D0.9E.D0.B3.D1.80.D0.B0.D0.BD.D0.B8.D1.87.D0.B5.D0.BD.D0.B8.D1.8F">Ограничения</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/index.php?title=Nitra&amp;action=edit&amp;section=8" title="Редактировать раздел «Ограничения»">править</a><span class="mw-editsection-bracket">]</span></span></h2>
+
+<!-- 
+NewPP limit report
+CPU time usage: 0.016 seconds
+Real time usage: 0.017 seconds
+Preprocessor visited node count: 30/1000000
+Preprocessor generated node count: 36/1000000
+PostĎxpand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+-->
+
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 - -total
+-->
+
+<!-- Saved in parser cache with key genfunwiki:pcache:idhash:595-0!*!*!!ru!*!* and timestamp 20151120112137 and revision id 724
+ -->
+</div>									<div class="printfooter">
+						Источник — «<a dir="ltr" href="http://wiki.gentoo-fun.info/index.php?title=Nitra&amp;oldid=724">http://wiki.gentoo-fun.info/index.php?title=Nitra&amp;oldid=724</a>»					</div>
+													<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/index.php/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D0%B8" title="Служебная:Категории">Категория</a>: <ul><li><a href="/index.php/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:ParserGenerators" title="Категория:ParserGenerators">ParserGenerators</a></li></ul></div></div>												<div class="visualClear"></div>
+							</div>
+		</div>
+
+												
+</body>
+</html>
