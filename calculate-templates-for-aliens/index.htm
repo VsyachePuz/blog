@@ -28,7 +28,7 @@
 <br />
 окажетесь в chroot-окружении /mnt/builder
 </dd>
-<dt>cl-image (из <a href="http://gpo.zugaina.org/sys-apps/calculate-builder">sys-apps/calculate-builder</a>)</dt>
+<dt><a href="cl-image.htm">cl-image</a> (из <a href="http://gpo.zugaina.org/sys-apps/calculate-builder">sys-apps/calculate-builder</a>)</dt>
 <dd>скрипт, создающий iso-файл
 <br />
 
@@ -41,7 +41,7 @@ cl-image squash
 <br />
 обновляет файл livecd.squashfs
 <br />
-<font style="color:red">ага, всё-таки параметр. iso-файл с каким названием тогда, получается, создаётся?</font>
+<font style="color:red">ага, всё-таки параметр. iso-файл с каким названием тогда, получается, создаётся?</font> <a href="iso-file.htm">тут</a>
 </dd>
 
 <dt>cl-assemble</dt>
@@ -68,7 +68,9 @@ cl-make -m &lt;-p профиль&gt;
 </dd>
 </dl>
 
-
+Во время сборки системы все настройки собираемых систем хранятся в файле /etc/calculate/assemble.env
+<br />
+<br />
 
 архивы бинарных пакетов программ в директории /var/calculate/remote/assemble/&lt;профиль&gt;/packages.
 
@@ -156,60 +158,8 @@ cl-make -m &lt;-p профиль&gt;
 
 
 
-<h2>cl-assemble</h2>
-выполняются следующие шаги:
-<ul>
-<li>Форматирование раздела (для быстрой очистки)
-<li>Распаковка базового образа
-<li>Распаковка портежей (в случае наличия архива портежей в директории /var/calculate/remote/snapshots)
-<li>Настройка шаблонами assemble/prepare
-<li>Подключение точек монтирования /dev, /dev/shm, /dev/pts, /proc, /sys, /var/calculate/remote
-<li>Обновлениие портежей
-<li>Установка layman
-<li>Загрузка оверлея calculate
-<li>Настройка шаблонами assemble/setup
-<li>Подключение calculate-install к конфигурированию пакетов (в случае использования одного из профилей Calculate)
-<li>Установка portage
-<li>Получение исходного кода ядра (из пакета calculate-sources, при наличии USE флага "vmlinuz" emerge компилирует и устанавливает ядро)
-<li>Установка v86d
-<li>Обновление baselayout и установка openrc (выполняется при использовании одного из профилей Calculate)
-<li>Установка man-db (выполняется при использовании одного из профилей Calculate)
-<li>Выполнение etc-update
-<li>Создание группы games(35)(группы создаются для фиксации номеров ID)
-<li>Создание группы plugdev(440)
-<li>Создание группы scanner(441)
-<li>Отключение базового образа системы
-</ul>
-
-<font style="color:red">А где установка grub2 в образ .iso? Я только ради этого стал читать...</font>
 
 
-<h2>.iso-шник</h2>
-образ на 100% совместим с Gentoo и обладает всеми свойствами Calculate Linux <font style="color:red">(всеми, это какими?)</font>
-<br />
-<br />
-Систему можно:
-<br />
-- загрузить с LiveCD
-<br />
-- записать на USB Flash либо переносной USB-HDD
-<br />
-- установить на жесткий диск <font style="color:red">(что здесь имеется в виду под словом "установить"? это после загрузки? или имеется в виду загрузка iso через grub?)</font>
-<br />
-<br />
-<font style="color:red">Как работает система при загрузке с USB-FLASH ? (надо по-подробнее посмотреть спецификацию El Torito)</font>
-<br />
-<br />
-Готовый образ и бинарные пакеты сохраняются в директории /var/calculate/remote
-<br />
-<font style="color:red">и как всё-таки точно полностью iso-шник называется?</font>
-<br />
-<br />
-cl-image -p &lt;профиль&gt; iso
-<br />
-Дистрибутив будет сохранен в директории /var/calculate/remote/assemble/&lt;профиль&gt;/linux/.
-<br />
-Помимо ISO-образа, будет создан файл с контрольными суммами и файл с составом программ.
 
 <h2>Запись .iso на диск</h2>
 cl-install -d /dev/sdX1 (вместо sdX1 укажите необходимое устройство, например, sdb1)
@@ -223,6 +173,43 @@ cl-install -d /dev/sdX1 (вместо sdX1 укажите необходимое
 layman -a calculate
 <br />
 emerge -av calculate-assemble
+<br />
+<br />
+# layman -i calculate
+<br />
+<br />
+&nbsp;* calculate
+<br />
+&nbsp;* ~~~~~~~~~
+<br />
+&nbsp;* Source  : git://git.calculate.ru/calculate/overlay.git
+<br />
+&nbsp;* Contact : at@calculate.ru
+<br />
+&nbsp;* Type    : Git; Priority: 50
+<br />
+&nbsp;* Quality : experimental
+<br />
+&nbsp;* 
+<br />
+&nbsp;* Description:
+<br />
+&nbsp;*   Calculate Overlay
+<br />
+&nbsp;* 
+<br />
+&nbsp;* Link:
+<br />
+&nbsp;*   http://www.calculate-linux.org
+<br />
+<br />
+<a href="http://git.calculate.ru/?p=calculate/overlay.git;a=tree">http://git.calculate.ru/?p=calculate/overlay.git;a=tree</a>
+<br />
+<br />
+<a href="https://git.calculate.ru/?p=calculate/overlay.git;a=blob;f=sys-apps/calculate-assemble/calculate-assemble-2.2.32-r9.ebuild">git.calculate.ru/?p=calculate/overlay.git;a=blob;f=sys-apps/calculate-assemble/calculate-assemble-2.2.32-r9.ebuild</a>
+<br />
+<br />
+
 
 <h2>stage3</h2>
  для сборки образа stage3, создайте директорию var/calculate/remote/stages и поместите туда архив 

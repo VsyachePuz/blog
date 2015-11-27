@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>cl-assemble</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>cl-assemble</h1>
+</td><td style="vertical-align:top;">
+<a href="index.htm">Введение в шаблоны Calculate в изложении для инопланетян</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+выполняются следующие шаги:
+<ul>
+<li>Форматирование раздела (для быстрой очистки)
+<li>Распаковка базового образа
+<li>Распаковка портежей (в случае наличия архива портежей в директории /var/calculate/remote/snapshots)
+<li>Настройка шаблонами assemble/prepare
+<li>Подключение точек монтирования /dev, /dev/shm, /dev/pts, /proc, /sys, /var/calculate/remote
+<li>Обновлениие портежей
+<li>Установка layman
+<li>Загрузка оверлея calculate
+<li>Настройка шаблонами assemble/setup
+<li>Подключение calculate-install к конфигурированию пакетов (в случае использования одного из профилей Calculate)
+<li>Установка portage
+<li>Получение исходного кода ядра (из пакета calculate-sources, при наличии USE флага "vmlinuz" emerge компилирует и устанавливает ядро)
+<li>Установка v86d
+<li>Обновление baselayout и установка openrc (выполняется при использовании одного из профилей Calculate)
+<li>Установка man-db (выполняется при использовании одного из профилей Calculate)
+<li>Выполнение etc-update
+<li>Создание группы games(35)(группы создаются для фиксации номеров ID)
+<li>Создание группы plugdev(440)
+<li>Создание группы scanner(441)
+<li>Отключение базового образа системы
+</ul>
+
+<font style="color:red">А где установка grub2 в образ .iso? Я только ради этого стал читать...</font>
+
+<br />
+<br />
+Ну, это, наверное должно быть где-то тут:
+<br />
+<a href="https://git.calculate.ru/?p=calculate-3/calculate-assemble.git;a=tree;f=assemble">git.calculate.ru/?p=calculate-3/calculate-assemble.git;a=tree;f=assemble</a>
+
+</body>
+</html>

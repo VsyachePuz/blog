@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>isohybrid</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>isohybrid</h1>
+</td><td style="vertical-align:top;">
+<a href="cl-image.htm">cl-image</a>,
+<a href="index.htm">Введение в шаблоны Calculate в изложении для инопланетян</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+<a href="http://www.syslinux.org/wiki/index.php/Isohybrid">http://www.syslinux.org/wiki/index.php/Isohybrid</a>
+<br />
+ISO 9660 filesystems which are created by the mkisofs command in the article about ISOLINUX will boot via BIOS or UEFI firmware only from optical media like CD, DVD, or BD.
+<br />
+<br />
+The isohybrid feature enhances such filesystems by a Master Boot Record (MBR) for booting via BIOS from disk storage devices like USB flash drives. 
+<br />
+<br />
+Both isohybrid programs contain MBR code matching the same version of the ISOLINUX bootloader file, "isolinux.bin".
+So always use the isohybrid program from the same Syslinux installation that provided this bootloader file for the ISO 9660 production.
+<br />
+<font style="color:red">А что есть я не syslinux использовал для создания .iso, а grub2?</font>
+<br />
+Тогда можно указать явно в другой программе - <strong>xorriso</strong>:
+<br />
+xorriso -as mkisofs   -o output.iso  <strong>-isohybrid-mbr /usr/lib/syslinux/isohdpfx.bin</strong>  -c isolinux/boot.cat   -b isolinux/isolinux.bin  -no-emul-boot -boot-load-size 4 -boot-info-table  CD_root
+<br />
+(The resulting ISO image needs no further treatment by isohybrid tools)
+
+</body>
+</html>
