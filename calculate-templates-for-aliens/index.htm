@@ -14,6 +14,230 @@
 &nbsp;
 </td></tr></table>
 
+<dl>
+<dt>/usr/share/calculate/templates</dt>
+<dd>шаблоны утилит Calculate</dd>
+<dt>/var/calculate/templates</dt>
+<dd>шаблоны пользователя</dd>
+</dl>
+
+<h2>Утилиты сборки</h2>
+<dl>
+<dt>cl-builder</dt>
+<dd>скрипт, выполняющий монтирование /dev/pts и /dev и /proc, а также копирование resolv.conf и выполнение chroot, и обратные операции после команды exit
+<br />
+окажетесь в chroot-окружении /mnt/builder
+</dd>
+<dt>cl-image (из <a href="http://gpo.zugaina.org/sys-apps/calculate-builder">sys-apps/calculate-builder</a>)</dt>
+<dd>скрипт, создающий iso-файл
+<br />
+
+<br />
+сохраним изменения в новом файле с ISO образом: cl-image iso
+<br />
+<font style="color:red">iso - это тут название параметра команде cl-image, или название самого iso-файла?</font>
+<br />
+cl-image squash
+<br />
+обновляет файл livecd.squashfs
+<br />
+<font style="color:red">ага, всё-таки параметр. iso-файл с каким названием тогда, получается, создаётся?</font>
+</dd>
+
+<dt>cl-assemble</dt>
+<dd>
+изучите справку команды cl-assemble, выполнив:
+<br />
+cl-assemble --help
+<br />
+<font style="color:red">ну нет, просто бы сказали - он а что внутри себя вызывает cl-image и cl-builder или что делает в целом?</font>
+<br />
+-p PROFILE, --profile - системный профиль, список возможных профилей можно получить, указав в параметре значение "list".
+<br />
+раздел для сборки системы будет отформатирован и примонтирован в директорию /mnt/&lt;профиль&gt;
+<br />
+--source SOURCE - базовый образ для сборки - 'stage' или 'SHORTNAME'.
+<br />
+За основу дистрибутива может быть взят stage3-образ Gentoo, либо любой образ Calculate Linux. В последнем случае следует указывать короткое имя дистрибутива, например "--source=CDS".
+</dd>
+
+<dt>cl-make</dt>
+<dd>Сборка системы выполняется командой:
+<br />
+cl-make -m &lt;-p профиль&gt;
+</dd>
+</dl>
+
+
+
+архивы бинарных пакетов программ в директории /var/calculate/remote/assemble/&lt;профиль&gt;/packages.
+
+
+
+
+
+<h2>Структура сборки</h2>
+файловая система монтируется из трех слоев aufs2 <font style="color:red">(почему не overlayfs?)</font>
+<dl>
+<dt>/mnt/scratch/calculate</dt>
+<dd>livecd.squashfs-образ системы, загружаемый с носителя и примонтированый в режиме "только для чтения"</dd>
+</dl>
+Свежеустановленные программы будет видны в слоях 2 и 3 (и в образе и на загруженной системе).
+<br />
+действия в загруженной системе не затронут /mnt/builder (который, очевидно, монтируется из слоёв 1 и 2)
+<br />
+<font style="color:red">Зачем нужен "базовый ISO образ, или какой-нибудь stage3", если есть livecd.squashfs?</font>
+
+
+
+
+
+
+
+
+
+
+
+<h2>режим Builder</h2>
+выберите в меню загрузки режим Builder
+<br />
+<font style="color:red">как устроен этот режим?</font>
+<br />
+есть гипотеза, что пункт меню grub передаёт параметр в init-скрипт,
+а init-script монтирует все те три слоя, про которые шла речь в пункте "структура сборки",
+надо этой гипотезе поискать подтверждения по исходникам
+<br />
+<br />
+При недостаточном объеме оперативной памяти следует установить CLS на жесткий диск в режиме Builder, тогда все изменения будут кэшироваться на жестком диске.
+<br />
+(Команда cl-image squash при этом будет не доступна, а результат работы можно получить в виде готового ISO образа, при помощи команды cl-image iso)
+<br />
+<font style="color:red">Круто, а как "установить в режиме" ?</font>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2>Установка пакетов</h2>
+примонтируйте свободный раздел жесткого диска либо сетевого диска в директорию 
+<br />
+/var/calculate/linux
+<dl>
+<dt>cl-update --sync-only</dt>
+<dd>обновить дерево портежей</dd>
+
+<h2>livecd.squashfs - цикл редактирования</h2>
+вы можете сохранить все изменения в файле livecd.squashfs на вашей флешке.
+<br />
+К концу файла будет добавлен порядковый номер сборки. 
+<br />
+<br />
+При последующих сборках старые файлы с образами будут удалены.
+<br />
+<font style="color:red">(что имеется в виду? разве старый файл не во время копирования затирается?)</font>
+<br />
+<br />
+Возможность модификации полученного дистрибутива с помощью загрузки в Builder-режиме сохраняется.
+<br />
+Таким образом, вы можете неограниченное число раз менять состав пакетов 
+<br />
+обычным для Gentoo образом - через обновление дерева портежей.
+
+
+
+
+
+
+
+<h2>cl-assemble</h2>
+выполняются следующие шаги:
+<ul>
+<li>Форматирование раздела (для быстрой очистки)
+<li>Распаковка базового образа
+<li>Распаковка портежей (в случае наличия архива портежей в директории /var/calculate/remote/snapshots)
+<li>Настройка шаблонами assemble/prepare
+<li>Подключение точек монтирования /dev, /dev/shm, /dev/pts, /proc, /sys, /var/calculate/remote
+<li>Обновлениие портежей
+<li>Установка layman
+<li>Загрузка оверлея calculate
+<li>Настройка шаблонами assemble/setup
+<li>Подключение calculate-install к конфигурированию пакетов (в случае использования одного из профилей Calculate)
+<li>Установка portage
+<li>Получение исходного кода ядра (из пакета calculate-sources, при наличии USE флага "vmlinuz" emerge компилирует и устанавливает ядро)
+<li>Установка v86d
+<li>Обновление baselayout и установка openrc (выполняется при использовании одного из профилей Calculate)
+<li>Установка man-db (выполняется при использовании одного из профилей Calculate)
+<li>Выполнение etc-update
+<li>Создание группы games(35)(группы создаются для фиксации номеров ID)
+<li>Создание группы plugdev(440)
+<li>Создание группы scanner(441)
+<li>Отключение базового образа системы
+</ul>
+
+<font style="color:red">А где установка grub2 в образ .iso? Я только ради этого стал читать...</font>
+
+
+<h2>.iso-шник</h2>
+образ на 100% совместим с Gentoo и обладает всеми свойствами Calculate Linux <font style="color:red">(всеми, это какими?)</font>
+<br />
+<br />
+Систему можно:
+<br />
+- загрузить с LiveCD
+<br />
+- записать на USB Flash либо переносной USB-HDD
+<br />
+- установить на жесткий диск <font style="color:red">(что здесь имеется в виду под словом "установить"? это после загрузки? или имеется в виду загрузка iso через grub?)</font>
+<br />
+<br />
+<font style="color:red">Как работает система при загрузке с USB-FLASH ? (надо по-подробнее посмотреть спецификацию El Torito)</font>
+<br />
+<br />
+Готовый образ и бинарные пакеты сохраняются в директории /var/calculate/remote
+<br />
+<font style="color:red">и как всё-таки точно полностью iso-шник называется?</font>
+<br />
+<br />
+cl-image -p &lt;профиль&gt; iso
+<br />
+Дистрибутив будет сохранен в директории /var/calculate/remote/assemble/&lt;профиль&gt;/linux/.
+<br />
+Помимо ISO-образа, будет создан файл с контрольными суммами и файл с составом программ.
+
+<h2>Запись .iso на диск</h2>
+cl-install -d /dev/sdX1 (вместо sdX1 укажите необходимое устройство, например, sdb1)
+
+
+<h2>Откуда берутся скрипты сборки</h2>
+установите пакет app-portage/layman (если он у вас не установлен)
+<br />
+подключите оверлей, выполнив:
+<br />
+layman -a calculate
+<br />
+emerge -av calculate-assemble
+
+<h2>stage3</h2>
+ для сборки образа stage3, создайте директорию var/calculate/remote/stages и поместите туда архив 
+<br />
+<font style="color:red">(в смысле "образа" или "<strong>из</strong> образа"?)</font>
+<br />
+<br />
+Если для сборки будет использоваться образ Calculate Linux, поместите его в директорию /var/calculate/remote/linux
+<br />
+<font style="color:red">в чём разница между /var/calculate/remote/linux и /var/calculate/linux ?</font>
+
+<h2>Разные ссылки</h2>
+<a href="http://www.calculate-linux.ru/main/ru/interactive_system_build">http://www.calculate-linux.ru/main/ru/interactive_system_build</a>
+<br />
+<a href="http://www.calculate-linux.ru/main/ru/calculate-assemble">http://www.calculate-linux.ru/main/ru/calculate-assemble</a>
 
 </body>
 </html>
