@@ -9,22 +9,33 @@
 		<email>VsuachePuz@gmail.com</email>
 	</author>
 	<title type="text">Блог VsyachePuz-а</title>
-	<updated>2015-10-27T15:40:03Z</updated>
+	<updated>2015-12-21T14:12:02Z</updated>
+
+	<entry>
+		<id>http://vsyachepuz.github.io/blog/how-to-increase-fact-density-per-communication.htm</id>
+		<link rel="alternate" type="text/html" href="http://vsyachepuz.github.io/blog/how-to-increase-fact-density-per-communication.htm" />
+		<published>2015-12-21T14:12:02Z</published>
+		<title type="text">Как увеличить плотность успешно переданных фактов, количество фактов делённое на единицу времени коммуникации?</title>
+		<summary type="xhtml" xml:lang="ru">
+			заметки о литературных приёмах
+		</summary>
+		<updated>2015-10-27T15:38:01Z</updated>
+	</entry>
 
 	<entry>
 		<id>http://vsyachepuz.github.io/blog/atom-feed-howto.htm</id>
 		<link rel="alternate" type="text/html" href="http://vsyachepuz.github.io/blog/atom-feed-howto.htm" />
 		<published>2015-10-27T10:00:01Z</published>
 		<title type="text">Как вставить содержимое поста в ленту новостей</title>
-		<summary type="xhtml" xml:lang="ru"><div xmlns="http://www.w3.org/1999/xhtml">
-			<svg height="100" width="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-				<a xlink:href="http://www.w3schools.com/svg/" target="_blank">
-				  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="yellow" />
-				  <circle cx="50" cy="50" r="14" stroke="black" stroke-width="3" fill="magenta" />
-				</a>
+		<summary type="xhtml" xml:lang="ru">&lt;div xmlns="http://www.w3.org/1999/xhtml"&gt;
+			&lt;svg height="100" width="100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"&gt;
+				&lt;a xlink:href="http://www.w3schools.com/svg/" target="_blank"&gt;
+				  &lt;circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="yellow" /&gt;
+				  &lt;circle cx="50" cy="50" r="14" stroke="black" stroke-width="3" fill="magenta" /&gt;
+				&lt;/a&gt;
 				svg-картинки отключены. В Thunderbird выбрать View -&gt; Feed message body as -&gt; Original HTML.
-			</svg>
-		</div></summary>
+			&lt;/svg&gt;
+		&lt;/div&gt;</summary>
 		<updated>2015-10-27T15:38:01Z</updated>
 	</entry>
 
@@ -33,27 +44,27 @@
 		<link rel="alternate" type="text/html" href="http://vsyachepuz.github.io/blog/NTP-PoE.htm" />
 		<published>2015-10-27T00:00:00Z</published>
 		<title type="text">Нужны ли часы с PoE?</title>
-		<summary type="xhtml" xml:lang="ru"><div xmlns="http://www.w3.org/1999/xhtml">
-			<a href="https://tools.ietf.org/html/rfc4287#section-4.1.3">https://tools.ietf.org/html/rfc4287#section-4.1.3</a>
-			<br />
+		<summary type="xhtml" xml:lang="ru">&lt;div xmlns="http://www.w3.org/1999/xhtml"&gt;
+			&lt;a href="https://tools.ietf.org/html/rfc4287#section-4.1.3"&gt;https://tools.ietf.org/html/rfc4287#section-4.1.3&lt;/a&gt;
+			&lt;br /&gt;
 			Интересно, можно ли тут вставлять .svg-картнки?
-			<br />
-			<svg xmlns="http://www.w3.org/2000/svg" height="100" width="100" >
-			  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="magenta" />
+			&lt;br /&gt;
+			&lt;svg xmlns="http://www.w3.org/2000/svg" height="100" width="100" &gt;
+			  &lt;circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="magenta" /&gt;
 			  Sorry, your browser does not support inline SVG.  
-			</svg> 
-			<br />
+			&lt;/svg&gt;
+			&lt;br /&gt;
 			А с гиперсылками?
-			<br />
-			<svg xmlns="http://www.w3.org/2000/svg" height="200" width="200" xmlns:xlink="http://www.w3.org/1999/xlink">
-			  <a xlink:href="http://www.w3schools.com/svg/" target="_blank">
-				  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
-			  </a>
+			&lt;br /&gt;
+			&lt;svg xmlns="http://www.w3.org/2000/svg" height="200" width="200" xmlns:xlink="http://www.w3.org/1999/xlink"&gt;
+			  &lt;a xlink:href="http://www.w3schools.com/svg/" target="_blank"&gt;
+				  &lt;circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" /&gt;
+			  &lt;/a&gt;
 			  Sorry, your browser does not support inline SVG.
-			</svg>
-			<br />
+			&lt;/svg&gt;
+			&lt;br /&gt;
 			хм.
-		</div></summary>
+		&lt;/div&gt;</summary>
 		<updated>2015-10-27T15:37:01Z</updated>
 	</entry>
 
@@ -62,9 +73,9 @@
 		<link rel="alternate" type="text/html" href="http://vsyachepuz.github.io/blog/2-3-way-diff-xml.htm" />
 		<published>2015-10-24T00:20:00Z</published>
 		<title type="text">А не закодить ли 2-Way и 3-Way Diff для XML?</title>
-		<summary type="xhtml" xml:lang="ru"><div xmlns="http://www.w3.org/1999/xhtml">
+		<summary type="xhtml" xml:lang="ru">&lt;div xmlns="http://www.w3.org/1999/xhtml"&gt;
 		1
-		</div></summary>
+		&lt;/div&gt;</summary>
 		<updated>2015-10-27T15:37:41Z</updated>
 	</entry>
 
@@ -73,9 +84,9 @@
 		<link rel="alternate" type="text/html" href="http://vsyachepuz.github.io/blog/oskorbleniya-publicity.htm" />
 		<published>2015-10-22T00:10:00Z</published>
 		<title type="text">Что является публичным?</title>
-		<summary type="xhtml" xml:lang="ru"><div xmlns="http://www.w3.org/1999/xhtml">
+		<summary type="xhtml" xml:lang="ru">&lt;div xmlns="http://www.w3.org/1999/xhtml"&gt;
 		2
-		</div></summary>
+		&lt;/div&gt;</summary>
 		<updated>2015-10-27T15:37:21Z</updated>
 	</entry>
 
