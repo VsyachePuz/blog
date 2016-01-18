@@ -11,7 +11,7 @@
 </td><td style="vertical-align:top;">
 &nbsp;
 <br />
-&nbsp;
+<a href="http://stackoverflow.com/questions/14922242/how-to-convert-bnf-to-ebnf">SO14922242</a>
 </td></tr></table>
 
 EBNF have 3 additional constructs:
@@ -30,10 +30,14 @@ A := B, { C }, D ; (* repetition of C *)
 <br />
 can be replaced with
 <br />
+A0 := ;
 <br />
 A0 := C, A0; // supplementary rule, which express repetition through tail recursion
 <br />
 A1 := B, A0, D; (* final rule = A *)
+<br />
+<br />
+I don't know the reason, why { } mean 0 to many repetitions instead of 1 to many.
 
 <h2>Optional parts</h2>
 A := B, [ C ], D ; (* C is optional *)
@@ -49,23 +53,23 @@ What if there N optional parts (and 2<sup>N</sup> variants of their presence)?
 <br />
 A := B, [ C ], [ D ], [ E ], [ F ], G ;
 <br />
-A0 := B; (* supplementary rule *)
+A0 := ;
 <br />
-A0 := B, C;
+A0 := C;
 <br />
-A1 := A0;
+A1 := ;
 <br />
-A1 := A0, D;
+A1 := D;
 <br />
-A2 := A1;
+A2 := ;
 <br />
-A2 := A1, E;
+A2 := E;
 <br />
-A3 := A2;
+A3 := ;
 <br />
-A3 := A2, F;
+A3 := F;
 <br />
-A4 := A3, G; (* final rule = A *)
+A4 := B, A0, A1, A2, A3, G; (* final rule = A *)
 
 <h2>Alternatives</h2>
 A := B | C;
