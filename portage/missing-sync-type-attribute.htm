@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>missing sync-type attribute</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>missing sync-type attribute</h1>
+</td><td style="vertical-align:top;">
+<a href="../index.htm">Блог Всячепуза</a>,
+&nbsp;
+<br />
+&nbsp;
+</td></tr></table>
+
+при вызове утилиты emerge выдаётся предупреждение
+<br />
+<div style="background-color:yellow;">
+!!! Repository 'gnome' has sync-uri attribute, but is missing sync-type attribute
+</div>
+<br />
+<br />
+казалось бы, ну что стоит дописать в сообщение URL, где более подробно описывается что делать и что читать дополнительно...
+<br />
+какой конкретно файл надо отредактировать? что туда надо вписать и в какое место?
+<br />
+<br />
+в файле
+<br />
+/etc/portage/repos.conf/layman.conf
+<br />
+есть секция
+<br />
+<div style="background-color:lightgray;">
+[gnome]
+<br />
+priority = 50
+<br />
+location = /var/lib/layman/gnome
+<br />
+layman-type = git
+<br />
+auto-sync = No
+<br />
+sync-uri = git://anongit.gentoo.org/proj/gnome.git
+</div>
+<br />
+в ней действительно нет <strong>sync-type</strong>, но ведь зато есть layman-type!!!
+<br />
+<br />
+на странице 
+<a href="https://wiki.gentoo.org/wiki/Project:Portage/Sync">https://wiki.gentoo.org/wiki/Project:Portage/Sync</a>
+<br />
+ предлагают:
+<br />
+1) проверить установленные версии билдов portage и layman, а так же правильность USE-флагов последнего
+<br />
+2) проверить настройку /etc/layman/layman.cfg
+<br />
+3) перенастроить конфигурацию layman утилитами, удалить старые конфиги
+
+<br />
+<br />
+<div style="background-color:lightblue;">
+"Ensure Layman 2.3.0 or higher has been installed with the laymansync module."
+</div>
+<br />
+у меня версия layman = 2.3.0-r1, но без USE="sync-plugin-portage":
+<br />
+[ebuild     U  ] app-portage/layman-2.4.1::gentoo [2.3.0-r1::gentoo] USE="bazaar git mercurial subversion -cvs -darcs -g-sorcery -gpg -sqlite% -squashfs -sync-plugin-portage {-test}" PYTHON_TARGETS="python2_7 python3_4 -pypy -python3_3 -python3_5" 128 KiB
+<br />
+<br />
+я боюсь обновлять его, потому что где-то про сабайон говорилось, что там специальные версии portage
+<br />
+(вдруг я обновлю и что-нибудь сломается...)
+
+<br />
+<br />
+А вот тут 
+<a href="https://forums.gentoo.org/viewtopic-p-7804960.html">https://forums.gentoo.org/viewtopic-p-7804960.html</a>
+<br />
+просто заменили layman-type на sync-type и всё! (и осталось неясным, как же так вышло, чтоб было неправильно? почему только оверлей gnome с таким варнингом, а на другие оверлеи такого варнинга не выдаётся?)
+
+</body>
+</html>
