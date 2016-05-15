@@ -26,9 +26,32 @@
 <br />
 &nbsp;&nbsp;&nbsp;&nbsp;здесь описано как использовать при помощи libvirt
 <br />
+<a href="http://landley.net/kdocs/Documentation/filesystems/9p.txt">http://landley.net/kdocs/Documentation/filesystems/9p.txt</a>
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;какая-то дока про протокол 9p
+<br />
+<a href="https://github.com/chaos/diod">https://github.com/chaos/diod</a>
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;The current protocol version, "9p2000.L" (for Linux) tailors the protocol to Linux
+with support for ACLs, <strong>file locking</strong>, more efficient directory listing, corner
+cases in things like file deletion. This version was introduced
+around 2009 and became the new default in 2011.
+
+  
 <br />
 <pre>
 Какие у меня вопросы про опции qemu?
+
+0) если сервер diod для протокола 9p поддерживает file locks, 
+то значит ли это, что я могу одну и ту же директорию засунуть через virtfs в две разные виртуальные машины в qemu ?
+
+ну кто же тебе про это что-нибудь ответит?
+- надо выяснить, что общего у кода diod и реализации серврной части из состава qemu
+- надо изучить протокол 9p
+- надо выяснить как работают блокировки в 9p
+- надо описать как запускать эти две виртуальные машины
+- надо поставить эксперимент по блокировкам доступа к файлам для двух виртуальных машин
+да тут на пару месяцев ресерча...
 
 1) неясно для чего используется "mount_tag", 
 
@@ -80,6 +103,8 @@ fsdriver
  This option specifies the fs driver backend to use.
  Currently "local", "handle" and "proxy" file system drivers are supported.
 
+допустим, что можно предположить, что proxy - это для подключения 
+через демона <a href="https://github.com/qemu/qemu/blob/master/fsdev/virtfs-proxy-helper.texi">https://github.com/qemu/qemu/blob/master/fsdev/virtfs-proxy-helper.texi</a>
 
 ------------------------------------------------------------------------------------------
 
@@ -107,7 +132,8 @@ http://wiki.qemu.org/Documentation/9psetup
            id=id
                Specifies identifier for this device
 
-я думаю, что это ошибка в документации (ну ты как, создал багу в багтрекере? кстати где он?)
+я думаю, что это ошибка в документации
+(<a href="https://bugs.launchpad.net/qemu/+bug/1581976">бага</a> в <a href="https://bugs.launchpad.net/qemu/">https://bugs.launchpad.net/qemu/</a>)
 
 ------------------------------------------------------------------------------------------
 
