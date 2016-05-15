@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как использовать virtfs в qemu?</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Как использовать virtfs в qemu?</h1>
+</td><td style="vertical-align:top;">
+<a href="../index.htm">Блог Всячепуза</a>,
+<br />
+&nbsp;
+</td></tr></table>
+
+<a href="http://wiki.qemu.org/Documentation/9psetup">http://wiki.qemu.org/Documentation/9psetup</a>
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;здесь описано, какие параметры передавать в qemu (и как собрать host-ядро)
+<br />
+<a href="http://www.linux-kvm.org/page/VirtFS">http://www.linux-kvm.org/page/VirtFS</a>
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;здесь описано как настроить kvm
+<br />
+<a href="https://en.opensuse.org/User:Tsu2/virtfs#Overview">https://en.opensuse.org/User:Tsu2/virtfs#Overview</a>
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;здесь описано как использовать при помощи libvirt
+<br />
+<br />
+<pre>
+Какие у меня вопросы про опции qemu?
+
+1) неясно для чего используется "mount_tag", 
+
+вот фрагмент из man qemu:
+-device virtio-9p-pci,fsdev=id,mount_tag=mount_tag
+           Options for virtio-9p-pci driver are:
+
+           fsdev=id
+               Specifies the id value specified along with -fsdev option
+
+           mount_tag=mount_tag
+               Specifies the tag name to be used by the guest to mount this export point
+
+Вот что написано в qemu-wiki:
+mount_tag: A tag which acts as a hint to the guest OS and is used to mount this exported path.
+
+надо бы пример, что это, где, как выглядит, зачем нужно...
+
+Итак, в гвесте создаётся устройство, 
+его наверное можно примонтировать, как cdrom в какую-то точку файловой системы ?
+
+и этот mount_tag - это случайно не имя устройства в /dev в гвестовой системе?
+
+
+2) зачем указывается path в хостовой части?
+хостовая файловая система самомонтируется?
+в хосте не надо ничего монтировать, тут же написано, что оно само отображается на этот path?
+
+разве нельзя было бы примонтировать устройство не только на гвесте, но и на хосте тоже?
+(то есть получается, что нельзя прокинуть файловую систему в другую сторону - из гвеста в хост)
+
+-fsdev fsdriver,id=id,path=path,[security_model=security_model][,writeout=writeout][,readonly][,socket=socket|sock_fd=sock_fd]
+  Define a new file system device.
+
+где этот device создаётся, в host-системе ?
+судя по следующим словам при описании параметров ключа - да:
+
+path=path
+ Specifies the export path for the file system device.
+ Files under this path will be available to the 9p client on the guest.
+
+virtfs-proxy-helper
+ - это в хостовой части? да, судя по тому, что он указывается в ключе fsdev...
+
+
+3) в чем разница между тремя драйверами из опции fsdriver?
+
+fsdriver
+ This option specifies the fs driver backend to use.
+ Currently "local", "handle" and "proxy" file system drivers are supported.
+
+
+------------------------------------------------------------------------------------------
+
+4) зачем в qemu два ключа - "-fsdev",  "-virtfs" ? почему не достаточно только одного из них?
+зачем нужен ключ "Virtual File system pass-through options" (-virtfs)?
+http://wiki.qemu.org/Documentation/9psetup
+  "is just a short-cut of the above command (то есть заменяет пару -fsdev ... -device ...)"
+
+логические объекты нужно создавать парами.
+Части пары связываются между собой, отыскивая другую половину по id
+первая часть пары указывается параметром
+-fsdev id=my_device_id_177392
+вторая часть пары указывается параметром
+-device fsdev=my_device_id_177392
+
+в определении ключа не написано, что можно указать id, а в описании такой параметр скопирован и присутствует:
+
+  -virtfs
+       fsdriver[,path=path],mount_tag=mount_tag[,security_model=security_model][,writeout=writeout][,readonly][,socket=socket|sock_fd=sock_fd]
+           The general form of a Virtual File system pass-through options are:
+
+           fsdriver
+               This option specifies the fs driver backend to use.  Currently "local", "handle" and "proxy" file system drivers are supported.
+
+           id=id
+               Specifies identifier for this device
+
+я думаю, что это ошибка в документации (ну ты как, создал багу в багтрекере? кстати где он?)
+
+------------------------------------------------------------------------------------------
+
+http://lists.nongnu.org/archive/html/qemu-discuss/2016-03/msg00057.html
+Is virtio-9p-pci device only supports the fsdev deices?
+I am trying to use -drive option for applying QoS for block device using Virtio-9p-pci device,
+but failing to create/add a device other than fsdev.
+
+virtio-blk-pci is used for block IO on the devices shared between the guest and the host.
+Here I want to share the file and have QoS between the guests. So I am using the Virtio-9p-pci.
+
+Basically I want to have QoS for virtio-9p-pci.
+
+http://lists.nongnu.org/archive/html/qemu-discuss/2016-03/msg00059.html
+I confirm that virti-9p-pci only supports fsdev...
+if you want a block device, why don't you use virtio-blk-pci ?
+
+I don't really understand the
+"devices shared between the guest and the host" wording...
+virtio-blk-pci exposes a virtio-blk device through PCI to the guest.
+The virtio-blk device can be backed by a file or a block device from the host.
+
+Greg Kurz
+
+9p is mostly aimed at sharing files...
+why would you want to use it for block io instead of a true block device ?
+
+You won't be able to have QoS on selected files,
+but it may be possible to introduce limits at the fsdev level:
+control all write accesses to all files and all read accesses to all files for a 9p device.
+
+
+Maybe possible to reuse the throttle.h API and hack v9fs_write() and v9fs_read() in 9p.c then.
+Are there any sample test cases or something about how to apply the throttling APIs to a device?*
+The throttling API is currently only used by block devices, and
+the only documentation out-there is the code itself...
+1. the common API is in throttle.h.
+2. Once you configure the throttling settings you essentially only need
+   to call throttle_schedule_timer() to see if a request needs to be
+   throttled, and afterwards throttle_account() to register the I/O that
+   has been peformed.
+</pre>
+
+</body>
+</html>
