@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>рпм = русскоязычный пакетный менеджер</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>рпм = русскоязычный пакетный менеджер</h1>
+</td><td style="vertical-align:top;">
+<a href="../index.htm">Блог Всячепуза</a>
+<br />
+<a href="https://en.wikipedia.org/wiki/Binfmt_misc">binfmt_misc</a>
+</td></tr></table>
+
+Что надо сделать для того, чтобы управлять программным обеспечением на компьютере на русском языке?
+<br />
+<br />
+бинарники можно для некоторых интерпретаторов запускать сразу, не записывая бинарник интерпретатора перед именем выполняемого файла.
+<br />
+но на начальном этапе это не нужно, потому что есть другая удобная для расширения точка.
+<br />
+есть обработчик файлов, начинаюзихся с символов #!
+<br />
+в такой скриптовый файл можно написать имя своего транслятора и этого будет более чем достаточно.
+<br />
+файл, кстати, можно не только интерпретирвать, но и комиплировать на лету
+<br />
+(а скомпилированное кешировать в БД по пути до файла, а проверять изменённость по контрольной сумме)
+
+
+<h2>Как линукс запускает бинарники?</h2>
+
+как должна работать загрузка бинарников, написано в описании ядра:
+<br />
+<a href="http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/binfmt_misc.txt?id=HEAD">http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/binfmt_misc.txt?id=HEAD</a>
+To use binfmt_misc you have to mount it first. You can mount it with  command
+<br />
+mount -t binfmt_misc none /proc/sys/fs/binfmt_misc
+<br />
+or to auto mounts on boot you can add  to your /etc/fstab a line 
+<br />
+none  /proc/sys/fs/binfmt_misc binfmt_misc defaults 0 0
+<br />
+You may want to add the binary formats in one of your /etc/rc scripts during
+boot-up.
+<br />
+<br />
+For java support see Documentation/java.txt
+<br />
+<br />
+To actually register a new binary type, you have to set up a string looking like
+:name:type:offset:magic:mask:interpreter:flags (where you can choose the ':'
+upon your needs) and echo it to /proc/sys/fs/binfmt_misc/register.
+<br />
+что мне здесь не ясно?
+<br />
+1) почему я не могу просмотреть список уже зарегистрированных обработчиков, например ELF? Он что особенным образом обрабатывается? С чего ему такая честь?
+<br />
+<br />
+<a href="http://stackoverflow.com/questions/8352535/how-does-kernel-get-an-executable-binary-file-running-under-linux">http://stackoverflow.com/questions/8352535/how-does-kernel-get-an-executable-binary-file-running-under-linux</a>
+<br />
+Linux binary loader
+<br />
+<br />
+Two steps from the linux kernel are relevant:
+<br />
+The fork system call (or perhaps vfork or clone) is used to create a new process, similar to the calling one (every Linux user-land process except init is created by fork or friends). 
+<br />
+fork is not a subroutine, it is a syscall, and as all system calls, it is an atomic operation from the application point of view.
+<br />
+<br />
+The execve system call replace the process address space by a fresh one
+<br />
+The ELF format is related to the execve system call
+<br />
+(essentially by sort-of mmap-ing segments from the ELF executable and anonymous segments, then initializing the registers, including the stack pointer).
+<br />
+the ld-linuc.so.2 dynamic loader is referenced inside the ELF executable so is related to execve and ELF.
+<br />
+The x86-64 ABI supplement and the <strong>Linux assembly howto</strong> give details.
+<br />
+The <strong>dynamic linking</strong> happens after execve and involves the /lib/x86_64-linux-gnu/ld-2.13.so file, which for ELF is viewed as an "interpreter".
+<br />
+<a href="http://en.wikipedia.org/wiki/Executable_and_Linkable_Format">http://en.wikipedia.org/wiki/Executable_and_Linkable_Format</a>
+
+<br />
+<br />
+<ul>
+<li><p><code>fs/exec.c</code> defines the system call at <code>SYSCALL_DEFINE3(execve</code></p>
+
+<p>Simply forwards to <code>do_execve</code>.</p></li>
+<li><p><code>do_execve</code></p>
+
+<p>Forwards to <code>do_execveat_common</code>.</p></li>
+<li><p><code>do_execveat_common</code></p>
+
+<p>To find the next major function, track when return value <code>retval</code> is last modified.</p>
+
+<p>Starts building a <code>struct linux_binprm *bprm</code> to describe the program, and passes it to <code>exec_binprm</code> to execute.</p></li>
+<li><p><code>exec_binprm</code></p>
+
+<p>Once again, follow the return value to find the next major call.</p></li>
+<li><p><code>search_binary_handler</code></p>
+
+<ul>
+<li><p>Handlers are determined by the first magic bytes of the executable.</p>
+
+<p>The two most common handlers are those for interpreted files (<code>#!</code> magic) and  for ELF (<code>\x7fELF</code> magic), but there are other built-into the kernel, e.g. <code>a.out</code>. And users can also register their own though <a href="https://www.kernel.org/doc/Documentation/binfmt_misc.txt" rel="nofollow">/proc/sys/fs/binfmt_misc</a></p>
+
+<p>The ELF handler is defined at <code>fs/binfmt_elf.c</code>.</p></li>
+<li><p>The <code>formats</code> list contains all the handlers.</p>
+
+<p>Each handler file contains something like:</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="kwd">static</span><span class="pln"> </span><span class="typ">int</span><span class="pln"> __init init_elf_binfmt</span><span class="pun">(</span><span class="kwd">void</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    register_binfmt</span><span class="pun">(&amp;</span><span class="pln">elf_format</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+
+<p>and <code>elf_format</code> is a <code>struct linux_binfmt</code> defined in that file.</p>
+
+<p><code>__init</code> is magic and puts that code into a magic section that gets called when the kernel starts: <a href="http://stackoverflow.com/questions/8832114/what-does-init-mean-in-the-linux-kernel-code">What does __init mean in the Linux kernel code?</a></p>
+
+<p>Linker-level dependency injection!</p></li>
+<li><p>There is also a recursion counter, in case an interpreter executes itself infinitely.</p>
+
+<p>Try this:</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="pln">echo </span><span class="str">'#!/tmp/a'</span><span class="pln"> </span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">/</span><span class="pln">tmp</span><span class="pun">/</span><span class="pln">a
+chmod </span><span class="pun">+</span><span class="pln">x </span><span class="pun">/</span><span class="pln">tmp</span><span class="pun">/</span><span class="pln">a
+</span><span class="pun">/</span><span class="pln">tmp</span><span class="pun">/</span><span class="pln">a</span></code></pre></li>
+<li><p>Once again we follow the return value to see what comes next, and see that it comes from:</p>
+
+<pre style="" class="lang-c prettyprint prettyprinted"><code><span class="pln">retval </span><span class="pun">=</span><span class="pln"> fmt</span><span class="pun">-&gt;</span><span class="pln">load_binary</span><span class="pun">(</span><span class="pln">bprm</span><span class="pun">);</span></code></pre>
+
+<p>where <code>load_binary</code> is defined for each handler on the struct: C-style polymorsphism.</p></li>
+</ul></li>
+<li><p><code>fs/binfmt_elf.c:load_binary</code></p>
+
+<p>Does the actual work:</p>
+
+<ul>
+<li>parses the ELF file according to the specs</li>
+<li>sets up the process initial program state based on the parsed ELF (memory into a <code>struct linux_binprm</code>, registers into a <code>struct pt_regs</code>)</li>
+<li>call <code>start_thread</code>, which is where it can really start to getting scheduled</li>
+</ul>
+
+<p>TODO: enter into more detail here. In particular, what RIP gets set to and how the dynamic loader is started. </p></li>
+</ul>
+<br />
+<br />
+Итак, надо поискать инфу по ключевому слову и требуемому формату (вдруг кто уже написал?)
+<br />
+<a href="https://en.wikipedia.org/wiki/Binfmt_misc">binfmt_misc</a>
+<br />
+
+
+<h2>Кодировка названий в файловой системе</h2>
+<a href="http://unix.stackexchange.com/questions/38055/utf-8-filenames">http://unix.stackexchange.com/questions/38055/utf-8-filenames</a>
+<br />
+On Unix/Linux, a filename is a sequence of any bytes except for a slash or a NUL. A slash separates path components, and a NUL terminates a path name.
+<br />
+So, you can use whatever encoding you want for filenames. 
+<br />
+Modern Unix/Linux environments handle UTF-8 encoded filenames just fine. 
+<br />
+Setting the environment LC_CTYPE to a UTF-8 locale like en_US.UTF-8 does the trick for many command-line applications.
+
+<h2>разделитель директорий</h2>
+разделитель директорий в путях должен быть '|', 
+чтобы не было обидно ни линуксоидам, ни виндузятникам, а то у одних '/' у других '\'
+<br />
+в нотной записи разделитель - тоже вертикальная черта,
+поэтому этот символ имеет больше исторических прав на существование
+чем черта косая, которая до компьютеров нигде не применялась
+<br />
+невозможность такой простой смены обозначения показывает стагнацию в IT-области.
+Как можно говорить прогрессе в искусственном интеллекте,
+если компьютерная система не может быть изменена для обработки информации в соответствии с требованиями пользователя?
+Простейшая же операция - один символ на другой заменить... И даже с этим справиться невозможно. Что тогда говорить о более сложных вещах?
+<br />
+В принципе можно проанализировать все исходники, и автоматизировать такой анализ на будущее
+(для этого надо создать анализатор способный разбираться во всех языках программирования - C++, python, javascript,
+а так же во всех естественных языках, чтобы исправить документацию)
+<br />
+<br />
+Но даже если эта работа будет проделана и будет получен дистрибутив, а так же исправленная документация,
+то всё равно нужно будет переучить людей, потому что бо&#769;льшая часть людей уже выучили)
+
+<h2>Как запускается bash?</h2>
+заменяют же его на другие шеллы?
+<br />
+<a href="https://wiki.archlinux.org/index.php/Command-line_shell#Changing_your_default_shell">https://wiki.archlinux.org/index.php/Command-line_shell#Changing_your_default_shell</a>
+<br />
+<a href="http://www.linuxfromscratch.org/blfs/view/7.4/postlfs/etcshells.html">http://www.linuxfromscratch.org/blfs/view/7.4/postlfs/etcshells.html</a>
+<br />
+To list all installed shells, run:
+<br />
+В Arch Linux
+<br />
+$ chsh -l
+<br />
+And to set one as default for your user (make sure you use the full path, as given by chsh -l):
+<br />
+в gentoo linux - <a href="https://wiki.gentoo.org/wiki/Shell">https://wiki.gentoo.org/wiki/Shell</a>
+<br />
+eix -cC app-shells
+<br />
+<br />
+$ chsh -s full-path-to-shell
+<br />
+<br />
+<a href="http://www.ibm.com/developerworks/linux/library/l-linux-shells/index.html">http://www.ibm.com/developerworks/linux/library/l-linux-shells/index.html</a>
+<br />
+<br />
+<a href="https://www.gnu.org/software/bash/manual/html_node/Invoking-Bash.html">https://www.gnu.org/software/bash/manual/html_node/Invoking-Bash.html</a>
+<br />
+<a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html">https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html</a>
+<br />
+<br />
+<pre># eix -cC app-shells
+[N] app-shells/autojump (--): change directory command that learns
+[?] app-shells/bash (4.3_p42-r1@01/14/2016 -&gt; 4.3_p39): The standard GNU Bourne again shell
+[?] app-shells/bash-completion (2.3-r2@04/28/2016 -&gt; 2.1_p20141224): Programmable Completion for bash
+[N] app-shells/bashdb (--): bash source code debugging
+[N] app-shells/bashish (2.2.4): Text console theme engine
+[N] app-shells/ccsh (0.0.4-r3): UNIX Shell for people already familiar with the C language
+[N] app-shells/dash (0.5.8.2): DASH is a direct descendant of the NetBSD version of ash (the Almquist SHell) and is POSIX compliant
+[N] app-shells/dsh (0.25.10): Distributed Shell
+[N] app-shells/esh (0.8.5-r2): A UNIX Shell with a simplified Scheme syntax
+[N] app-shells/fish ((~)2.2.0): fish is the Friendly Interactive SHell
+[I] app-shells/gentoo-bashcomp (20140911@11/24/2014): Gentoo-specific bash command-line completions (emerge, ebuild, equery, repoman, layman, etc)
+[N] app-shells/gentoo-zsh-completions ((~)20150103): Gentoo specific zsh completion support (includes emerge and ebuild commands)
+[N] app-shells/heirloom-sh ((~)050706): Heirloom Bourne Shell, derived from OpenSolaris code SVR4/SVID3
+[N] app-shells/ksh ((~)93.20140625): The Original Korn Shell, 1993 revision (ksh93)
+[N] app-shells/localshell (1.3.4): Localshell allows per-user/group local control of shell execution
+[N] app-shells/mksh ((~)51): MirBSD Korn Shell
+[N] app-shells/mpibash ((~)1.2): Parallel scripting right from the Bourne-Again Shell (Bash)
+[N] app-shells/pdmenu ((~)1.3.4): A simple console menu program
+[N] app-shells/pdsh ((~)2.26): A high-performance, parallel remote shell utility
+[N] app-shells/posh ((~)0.12): Reimplementation of Bourne shell based on pdksh
+[N] app-shells/psh (1.8.1-r1): Combines the interactive nature of a Unix shell with the power of Perl
+[I] app-shells/push (1.6@06/27/2015): A POSIX shell function to treat a variable like an array, quoting args
+[N] app-shells/rc ((~)1.7.2): A reimplementation of the Plan 9 shell
+[N] app-shells/rrs (1.70-r1): Reverse Remote Shell
+[N] app-shells/rssh ((~)2.3.4_p3): Restricted shell for SSHd
+[N] app-shells/rust-zshcomp ((~)1_beta20150411): Rust zsh completions
+[N] app-shells/sash (3.8): A small (static) UNIX Shell
+[N] app-shells/scsh ((~)0.6.7-r1): Unix shell embedded in Scheme
+[N] app-shells/scsh-install-lib (--): Installation tool for the Scheme Untergrund Library
+[N] app-shells/shish (--): The diet shell
+[N] app-shells/smrsh ((~)8.14.9): Sendmail restricted shell, for use with MTAs other than Sendmail
+[N] app-shells/soapbox ((~)0.3.1-r1): A preload (sandbox) library to restrict filesystem writes
+[N] app-shells/squirrelsh ((~)1.2.7): An advanced, cross-platform object oriented scripting shell based on the squirrel scripting language
+[N] app-shells/tcsh ((~)6.18.01-r3): Enhanced version of the Berkeley C shell (csh)
+[N] app-shells/zsh ((~)5.0.8): UNIX Shell similar to the Korn shell
+[N] app-shells/zsh-completions ((~)0.12.0-r2): Additional completion definitions for Zsh
+Found 36 matches.</pre>
+
+<h2>команды русскими буквами</h2>
+- поддерживает ли bash запуск программ, названных русскими буквами?
+<br />
+да, он вообще это не по названию делает, а по первым байтам исполняемого файла (ну если других ограничений нет в реализации интерпретатора, в частности bash)
+<br />
+- где это написано?
+<br />
+- откуда это следует по коду?
+<br />
+Проще всего написать программу типа "hello world" и проверить.
+<br />
+<br />
+Вобщем, скрипты писать на русском языке можно.
+<br />
+<br />
+
+
+<h2>Параметры команд русскими буквами</h2>
+- можно ли вводить русские буквы в качестве аргументов командной строки?
+<br />
+- где это написано?
+<br />
+- откуда это следует по коду?
+<br />
+<br />
+
+
+
+</body>
+</html>
