@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Профили в генту</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Профили в генту</h1>
+</td><td style="vertical-align:top;">
+<a href="../index.htm">Блог Всячепуза</a>,
+</td></tr></table>
+
+<a href="https://wiki.gentoo.org/wiki/Profile_%28Portage%29">https://wiki.gentoo.org/wiki/Profile_(Portage)</a>
+
+<h2>Зачем нужен профиль?</h2>
+ну, захочется, например собрать @world с какими-то определёнными настройками, рраз, выбрал профиль и собрал.
+
+<br />
+<br />
+О, чуваак, так тебе нужен catalyst, говорят на канале #gentoo-dev-help
+<br />
+<a href="https://wiki.gentoo.org/wiki/Project:Catalyst">https://wiki.gentoo.org/wiki/Project:Catalyst</a>
+<br />
+<a href="https://wiki.gentoo.org/wiki/Project:Catalyst/FAQ">https://wiki.gentoo.org/wiki/Project:Catalyst/FAQ</a>
+<br />
+<a href="https://wiki.gentoo.org/wiki/Catalyst">https://wiki.gentoo.org/wiki/Catalyst</a>
+<br />
+<a href="https://gitweb.gentoo.org/proj/catalyst.git/tree/README">https://gitweb.gentoo.org/proj/catalyst.git/tree/README</a>
+<br />
+<br />
+<a href="https://www.linux.org.ru/forum/admin/7704897">https://www.linux.org.ru/forum/admin/7704897</a>
+<br />
+<a href="http://www.anticore.org/ratgentoo/">http://www.anticore.org/ratgentoo/</a>
+<br />
+<a href="https://forum.jenkler.se/linux/gentoo-catalyst-building-installation-stages-t101.html">https://forum.jenkler.se/linux/gentoo-catalyst-building-installation-stages-t101.html</a>
+
+
+<h2>а что такое вообще этот ваш @world ?</h2>
+
+<a href="https://wiki.gentoo.org/wiki/World">Ну</a>, <a href="https://wiki.gentoo.org/wiki/World_set_%28Portage%29">world set</a>
+это группа пакетов
+<br />
+перечисленных в файле
+<br />
+/var/lib/portage/world
+
+<h3>Ну ок, а что такое set ?</h3>
+<a href="https://wiki.gentoo.org/wiki//etc/portage/sets">https://wiki.gentoo.org/wiki//etc/portage/sets</a>
+<br />
+one-to-many relationship between a set name and an arbitrary group of package atoms.
+<br />
+ну это разные файлы в директории /etc/portage/sets
+<br />
+User-defined set names correspond to the name of the file. Each file should contain a list of package atoms and nested package sets, one per line.
+You can see the full list of sets that exist at any time with user $emerge --list-sets
+<br />
+<br />
+<font style="color:red">да, а почему тогда файл world лежит не в той директории, а в другой?</font>
+<br />
+/etc for configuration, /etc/ is meant to be per-machine
+<br />
+"world" is not a set you are meant to manipulate via manual edits.
+<br />
+/var/lib for state information
+<br />
+<br />
+<a href="https://dev.gentoo.org/~zmedico/portage/doc/ch02.html">https://dev.gentoo.org/~zmedico/portage/doc/ch02.html</a>
+<br />
+There are multiple locations where portage looks for set configuration files, which are usually named sets.conf. Not all of these locations have to contain a sets.conf, missing files are simply ignored.
+<br />
+At first it reads the default configuration from all of the files located in /usr/share/portage/config/sets directory.
+The default config includes sets that are expected on all systems and often critical for normal operation, like world, system or security.
+After that it will read configurations located in repositories configured in repos.conf.
+Finally a system-specific set configuration may reside in /etc/portage to either define additional sets or alter the default and repository sets. 
+
+<br />
+<br />
+<font style="color:red">Откуда берется список сетов?</font>
+<br />
+<pre>$ emerge --list-sets
+changed-deps
+downgrade
+installed
+live-rebuild
+module-rebuild
+preserved-rebuild
+profile
+rebuilt-binaries
+security
+selected
+selected-packages
+selected-sets
+system
+unavailable
+unavailable-binaries
+world
+x11-module-rebuild</pre>
+
+
+<h3><font style="color:red">Как определяется текущий профиль?</font></h3>
+
+<br />
+<br />
+
+<font style="color:red">can profile define what the world file should contain?</font>
+<br />
+&lt;iamben&gt; no
+<br />
+<br />
+<font style="color:red">Как задать, что должно находится в system set?</font>
+
+<h3>Когда используется файл world?</h3>
+При выполнении команд обновления
+<br />
+when a world update is requested (through emerge -uDN @world or similar command),
+<br />
+Portage will use the world file as the base for its update calculations.
+<br />
+<br />
+/usr/sbin/emaint --check world
+<br />
+The emaint command can be used to see if any problems exist in the world file
+
+<h3>Как почистить файл world?</h3>
+The emerge --deselect option will remove these entries without unmerging them.
+<br />
+while read i ; do if [ -n &quot;$(qdepends -Q $i)&quot; ]; then echo $i &gt;&gt; /tmp/deselect ; fi; done &lt; /var/lib/portage/world
+<br />
+emerge --ask --deselect $(cat /tmp/deselect)
+<br />
+<br />
+emerge --ask --noreplace &lt;atom&gt;
+<br />
+It will add the atom to the /var/lib/portage/world file without compiling it again. 
+
+
+
+<h2>Профиль заменит всё?</h2>
+для сборки нужен файл world, профиль и настроенный /etc/portage
+<br />
+<br />
+вопрос - можно ли в профиле определить всё, что есть в /etc/portage ?
+<br />
+как потом начать сборку с пустым /etc/portage ?
+<br />
+<br />
+Нет, всё профиль не заменит. Зато есть пакет каталист (catalyst), который предназначен как раз для разных сборок
+
+</body>
+</html>
