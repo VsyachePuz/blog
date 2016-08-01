@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Почему bash - фиговый скриптовый язык</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Почему bash - фиговый скриптовый язык</h1>
+</td><td style="vertical-align:top;">
+<a href="index.htm">Блог Всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+Плохо, что bash-овый скрипт не может использовать API движка, который этот скрипт гоняет. Вот JavaScript в этом плане гораздо лучше.
+
+Например, как вызвать python-овые функции portage из eclass-а?
+
+<h2>Как я разбирался с CONFIG_PROTECT</h2>
+
+мне не ясно, как работает CONFIG_PROTECT, читал вот это - <a href="https://devmanual.gentoo.org/general-concepts/config-protect/index.html">https://devmanual.gentoo.org/general-concepts/config-protect/index.html</a>
+<br />
+там написано, что не надо самостоятельно зверски патчить что попало. Но мне очень хочется
+<br />
+<br />
+Задача: по репозиторию
+<br />
+<a href="https://github.com/gentoo/portage/">https://github.com/gentoo/portage/</a>
+<br />
+разобраться как реализован механизм CONFIG_PROTECT в исходных кодах менеджера portage
+<br />
+<br />
+Rather than installing protected files directly, Portage will install them as <strong>._cfg0000_filename</strong>.
+<br />
+это написано здесь - <a href="https://devmanual.gentoo.org/general-concepts/config-protect/index.html">https://devmanual.gentoo.org/general-concepts/config-protect/index.html</a>
+
+<br />
+<br />
+я хочу сделать копию конфига так же, как это делает portage
+<br />
+то есть в pkg_postinst делать копию, в которой что-то добавлено
+<br />
+а в pkg_prerm делать копию, в которой оно удалено
+<br />
+если я правильно поименую эти копии конфигов, то наверное пользователь сможет их обновить так же, как он это делает со всеми остальными конфигами
+<br />
+проблема в том, что нигде не описано, как модифицировать конфиги программно, а не патчами. Например как узнать, какое имя получится у новой копии конфига?
+
+<h2>Как проверить</h2>
+Функции с параметрами и значениями в portage есть
+<br />
+Например на странице
+<br />
+<a href="https://devmanual.gentoo.org/ebuild-writing/eapi/">https://devmanual.gentoo.org/ebuild-writing/eapi/</a>
+<br />
+написано
+<br />
+The <a href="https://github.com/gentoo/portage/blob/abf71501a7d81f95770322497995c205eff1999c/bin/phase-helpers.sh#L1117-L1131">in_iuse</a> function returns true if the given parameter is available in the ebuilds USE.
+
+
+<h2>CONFIG_PROTECT</h2>
+Any directory which is listed in CONFIG_PROTECT (and any subdirectories thereof), 
+except for any which are listed in CONFIG_PROTECT_MASK (and subdirectories) 
+are automatically 'protected' by Portage when copying an image from DESTDIR to ROOT. 
+<br />
+<br />
+Надо посмотреть, найти фрагмент, где происходит это копирование из DESTDIR в ROOT. Учитывается ли там CONFIG_PROTECT_MASK ?
+
+<h2>CONFIG_PROTECT_MASK</h2>
+То есть если я хочу некий файл обновить автоматически, я при установке одного конкретного пакета могу добавить путь до файла конфигурации в CONFIG_PROTECT_MASK перед emerge
+<br />
+<br />
+<a href="https://github.com/gentoo/portage/blob/a810a92d615c904db59326188e1437fdab74e705/cnf/make.globals#L106">cnf/make.globals#L106</a>
+<br />
+CONFIG_PROTECT_MASK="/etc/env.d"
+<br />
+<br />
+Вопрос - вызывается ли что-то подобное etc-update и dispatch-conf автоматически для файлов упомянутых в CONFIG_PROTECT_MASK ? Сомневаюсь...
+<br />
+Выводится уведомление, что надо обновить файлы (без учета CONFIG_PROTECT_MASK), а при обновлении файлы из CONFIG_PROTECT_MASK обновляются автоматически.
+
+<h2>etc-update</h2>
+<a href="https://github.com/gentoo/portage/blob/4ec443f2ac57040304107720f24cad6b4651c7a4/bin/etc-update#L147-L155">bin/etc-update#L147-L155</a>
+<pre>
+			local mpath
+			for mpath in ${CONFIG_PROTECT_MASK}; do
+				mpath="${EROOT%/}${mpath}"
+				if [[ "${rpath}" == "${mpath}"* ]] ; then
+					${QUIET} || echo "Updating masked file: ${live_file}"
+					mv "${cfg_file}" "${live_file}"
+					continue 2
+				fi
+			done
+</pre>
+<h2>dispatch-conf</h2>
+<a href="https://github.com/gentoo/portage/blob/899fe21d9829275816455206a9fb48c496755b96/bin/dispatch-conf#L169-L177">bin/dispatch-conf#L169-L177</a>
+<pre>
+ 	#
+        # Remove new configs identical to current
+        #                  and
+        # Auto-replace configs a) whose differences are simply CVS interpolations,
+        #                  or  b) whose differences are simply ws or comments,
+        #                  or  c) in paths now unprotected by CONFIG_PROTECT_MASK,
+        #
+
+        def f (conf):
+</pre>
+
+
+<h3>Что ищется в исходниках</h3>
+
+<a href="https://github.com/gentoo/portage/blob/4ec443f2ac57040304107720f24cad6b4651c7a4/pym/_emerge/post_emerge.py#L18">pym/_emerge/post_emerge.py#L18</a>
+<pre>
+from .chk_updated_cfg_files import chk_updated_cfg_files
+</pre>
+<a href="https://github.com/gentoo/portage/blob/4ec443f2ac57040304107720f24cad6b4651c7a4/pym/_emerge/post_emerge.py#L95-L96">pym/_emerge/post_emerge.py#L95-L96</a>
+<pre>
+config_protect = portage.util.shlex_split(
+	settings.get("CONFIG_PROTECT", ""))
+</pre>
+<a href="https://github.com/gentoo/portage/blob/4ec443f2ac57040304107720f24cad6b4651c7a4/pym/_emerge/post_emerge.py#L149">pym/_emerge/post_emerge.py#L149</a>
+<pre>
+	chk_updated_cfg_files(settings['EROOT'], config_protect)
+</pre>
+<a href="https://github.com/gentoo/portage/blob/4ec443f2ac57040304107720f24cad6b4651c7a4/pym/_emerge/chk_updated_cfg_files.py">pym/_emerge/chk_updated_cfg_files.py</a>
+<br />
+эта функция вызывает portage.util.find_updated_config_files(target_root, config_protect)
+<br />
+смотрит, какие из них попадают в список CONFIG_PROTECT
+<br />
+и выводит список файлов, которые были изменены, а потом выводит инструкции для пользователя (читать man как обновлять файлы)
+<br />
+<a href="https://github.com/gentoo/portage/blob/b5365341dad167e314023df95d2c5e0f955962f0/pym/portage/util/__init__.py#L1750-L1758">pym/portage/util/__init__.py#L1750-L1758</a>
+<pre>
+def find_updated_config_files(target_root, config_protect):
+	"""
+	Return a tuple of configuration files that needs to be updated.
+	The tuple contains lists organized like this:
+		[protected_dir, file_list]
+	If the protected config isn't a protected_dir but a procted_file, list is:
+		[protected_file, None]
+	If no configuration files needs to be updated, None is returned
+	"""
+</pre>
+<a href="https://github.com/gentoo/portage/blob/b5365341dad167e314023df95d2c5e0f955962f0/pym/portage/util/__init__.py#L1789">pym/portage/util/__init__.py#L1789</a>
+<pre>
+	"find '%s' -maxdepth 1 -name '._cfg????_%s'"
+</pre>
+		
+<h2>Как нужно назвать файл-копию</h2>
+Это знает portage. Может он сам и должен такую копию создавать, а мне нужно только скопировать в нужную директорию?
+<br />
+Копирование какой-то конкретной версии конфигурационного файла не будет работать в случае установки бинарного пакета.
+<br />
+<br />
+Я предалгаю создавать 
+<br />
+специальным образом поименованную копию так же, как это делает portage из шагов после инсталляции и 
+<br />
+другую копию со стёртыми строками перед удалением пакета
+<br />
+<br />
+для этого надо разобраться, какой код в portage такие копии создаёт,
+<br />
+это позволит понять, можно ли этим кодом воспользоваться из eclass
+<br />
+<br />
+В генте ведь какая логика? Сначала надо всё прочитать и только потом задавать вопрос, потому что мерзкие твари считают себя самыми умными.
+<br />
+<a href="https://wiki.gentoo.org/wiki/CONFIG_PROTECT">https://wiki.gentoo.org/wiki/CONFIG_PROTECT</a>
+<br />
+<a href="https://wiki.gentoo.org/wiki/Handbook:AMD64/Working/EnvVar">https://wiki.gentoo.org/wiki/Handbook:AMD64/Working/EnvVar</a>
+<br />
+<a href="https://devmanual.gentoo.org/general-concepts/config-protect/index.html">https://devmanual.gentoo.org/general-concepts/config-protect/index.html</a>
+
+
+
+<h3>emerge --config</h3>
+
+<dl>
+<dt>--config</dt>
+<dd>Run package specific actions needed to be executed after the emerge process has completed. This usually entails configuration file setup or other similar setups that the user may wish to run.</dd>
+</dL>
+<a href="https://dev.gentoo.org/~zmedico/portage/doc/man/emerge.1.html">https://dev.gentoo.org/~zmedico/portage/doc/man/emerge.1.html</a>
+<br />
+запускает pkg_config
+
+<h2>Сухой остаток</h2>
+Нужно внимательно изучить весь питоновый код, работающий с CONFIG_PROTECT и переписать его логику на bash, после чего поместить в eclass
+<br />
+изучать внимательно не обязательно, можно сделать <s>тяп-ляп</s> <strong>с приемлемым качеством</strong>, потом пипл поплюётся и допилит как надо.
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как приблизить коммунизм</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Как приблизить коммунизм</h1>
+</td><td style="vertical-align:top;">
+<a href="index.htm">Блог Всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+Отдельная домашняя директория для рута - это пережитки феодально-буржуазной формации
+<br />
+<br />
+
+1) Сначала нужно добавить нового пользователя-революционера
+<br />
+<a href="http://www.shellhacks.com/en/HowTo-Create-USER-with-ROOT-Privileges-in-Linux">http://www.shellhacks.com/en/HowTo-Create-USER-with-ROOT-Privileges-in-Linux</a>
+<br />
+разумеется, командами
+<br />
+# useradd -ou 0 -g 0 lenin
+<br />
+# passwd lenin
+<br />
+это делать неправильно,потому что <a href="http://serverfault.com/a/58386">протестуют</a> лоббисты sudo. даже <a href="http://askubuntu.com/questions/246146/how-can-i-permanently-grant-root-access-to-a-user">без пароля</a>
+<br />
+<br />
+Root has a UID of zero in /etc/passwd. This means absolute control over the system for the root user. You can set any user id to 0 (zero) to grant unlimited permissions provided that you login as root.
+<br />
+<dl>
+
+<dt><b>-o</b>, <b>--non-unique</b></dt>
+<dd>Allow the creation of a user account with a duplicate (non-unique) UID.
+</dd>
+
+<dt><b>-u</b>, <b>--uid</b> <i>UID</i></dt>
+<dd>The numerical value of the user's ID. This value must be unique, unless the <b>-o</b> option is used. The value must be non-negative. The default is to use
+the smallest ID value greater than 999 and greater than every other user. Values between 0 and 999 are typically reserved for system accounts.
+</dd>
+
+<dt><b>-g</b>, <b>--gid</b> <i>GROUP</i></dt>
+<dd>The group name or ID for a new user's initial group (when the <b>-N/--no-user-group</b> is used or when the <b>USERGROUPS_ENAB</b> variable is set to
+<i>no</i> in /etc/login.defs. The named group must exist, and a numerical group ID must have an existing entry.
+<p>This option sets the <b>GROUP</b> variable in /etc/default/useradd.
+</p></dd>
+
+</dl>
+<br />
+<br />
+2) Затем нужно сгенерировать ключ-броневик для ssh и закачать открытую часть на сервер для sshd (это нужно, чтобы эффективнее лениться вводить пароль)
+<br />
+ssh-keygen
+<br />
+<br />
+в /etc/ssh/sshd_config
+<br />
+PubkeyAuthentication yes
+<br />
+AuthorizedKeysFile    /etc/ssh/authorized_keys
+<br />
+If nothing is specified, it uses the default value: %h/.ssh/authorized_keys (i.e. /home/lenin/.ssh/authorized_keys)
+<br />
+<br />
+вот эти опция и команда пока неясно зачем:
+<br />
+RSAAuthentication yes
+<br />
+echo 'lenin ALL=(ALL) ALL' >> /etc/sudoers
+<br />
+<br />
+3) затем нужно проверить сторонников в бою
+<br />
+параметры из <a href="http://linux.die.net/man/1/ssh">man ssh</a>
+<dl>
+<dt>-i identity_file</dt>
+<dd>Selects a file from which the identity (private key) for RSA or DSA authentication is read. The default is ~/.ssh/identity for protocol version 1, and ~/.ssh/id_rsa and ~/.ssh/id_dsa for protocol version 2. Identity files may also be specified on a per-host basis in the configuration file. It is possible to have multiple -i options (and multiple identities specified in configuration files).</dd>
+<dt>-l login_name</dt>
+<dd>Specifies the user to log in as on the remote machine. This also may be specified on a per-host basis in the configuration file.</dd>
+<dt>-p port</dt>
+<dd>Port to connect to on the remote host. This can be specified on a per-host basis in the configuration file.</dd>
+</dl>
+прописать это всё в конфиг ssh-клиента <a href="http://linux.die.net/man/5/ssh_config">~/.ssh/config</a>, чтобы не вводить каждый раз. Тут описано, как:
+<br />
+<a href="http://nerderati.com/2011/03/17/simplify-your-life-with-an-ssh-config-file/">http://nerderati.com/2011/03/17/simplify-your-life-with-an-ssh-config-file/</a>
+<br />
+<pre>
+Host myhosting
+  HostName 208.11.0.6
+  Port 22000
+  User vsyachepuz
+  IdentityFile ~/.ssh/vsyachepuz.key
+</pre>
+You can simply type:
+<br />
+$ ssh myhosting
+
+<br />
+<br />
+
+4) устроить переворот
+<br />
+тут надо знать тонкости, например в /etc/ssh/sshd_config настройка
+<br />
+PermitRootLogin no
+<br />
+запрещает именно аккаунт root или всех пользователей с uid=0 ? (похоже, что всех...)
+<br />
+<br />
+<a href="http://support.hostgator.com/articles/specialized-help/technical/how-to-disable-password-authentication-for-ssh">http://support.hostgator.com/articles/specialized-help/technical/how-to-disable-password-authentication-for-ssh</a>
+<br />
+ChallengeResponseAuthentication no
+<br />
+PasswordAuthentication no
+<br />
+UsePAM no 
+<br />
+<br />
+5) убить царя
+<br />
+изменить uid рута в файле /etc/passwd с нуля на что-то другое
+<br />
+использовать userdel root
+<br />
+и стереть /root
+<br />
+(ещё не пробовал)
+
+<br />
+<br />
+И тогда директории у всех пользователей станут одинаковыми. Справедливость, равенство, братство!
+
+</body>
+</html>
