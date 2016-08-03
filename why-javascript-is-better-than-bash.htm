@@ -192,5 +192,183 @@ def find_updated_config_files(target_root, config_protect):
 <br />
 изучать внимательно не обязательно, можно сделать <s>тяп-ляп</s> <strong>с приемлемым качеством</strong>, потом пипл поплюётся и допилит как надо.
 
+<hr />
+<h2>Второй раунд разборок</h2>
+<h3>portageq</h3>
+Это такая вспомогательная утилита, которой я ни разу не пользовался за много лет:
+<br />
+<a href="https://wiki.gentoo.org/wiki/Portageq">https://wiki.gentoo.org/wiki/Portageq</a>
+<br />
+<a href="https://github.com/gentoo/portage/blob/9590cb4bf4140e3fc5610b1ea0e290b2df93c24a/bin/portageq#L346-L386">https://github.com/gentoo/portage/blob/9590cb4bf4140e3fc5610b1ea0e290b2df93c24a/bin/portageq#L346-L386</a>
+<br />
+def is_protected(argv):
+<br />
+expected 2 parameters: root, filename
+<br />
+Возвращает 0 или 1, использует функции portage.util.shlex_split, ConfigProtect и .isprotected(f)
+<br />
+в документации так про неё и написано:
+<pre>
+docstrings['is_protected'] = """<eroot> <filename>
+	Given a single filename, return code 0 if it's protected, 1 otherwise.
+	The filename must begin with <eroot>.
+	"""
+is_protected.__doc__ = docstrings['is_protected']
+</pre>
+<br />
+можно из командной строки вызвать, передать параметр $EROOT и имя одного файла и команда вернёт - защищённый этот файл или нет
+<br />
+можно из командной строки вызвать, передать параметр $EROOT и она отфильтрует из всех файлов те файлы, которые CONFIG_PROTECTED
+<pre>
+filter_protected &lt;eroot&gt;
+      Read filenames from stdin and write them to stdout if they are protected.
+      All filenames are delimited by \n and must begin with <eroot>.
+</pre>
+<br />
+Вопрос - используется ли portageq в каком-либо из билдов?
+<br />
+there is an utility "portageq" which have 2 options - to check one file (is_protected), and to check list of files (filter_protected), since this is command line tool, it can be called from bash script.
+<br />
+This allows to call code of portage for determine protected files from ebuild or eclass
+<br />
+<br />
+<a href="https://github.com/gentoo/portage/blob/b5365341dad167e314023df95d2c5e0f955962f0/pym/portage/util/__init__.py#L1590">https://github.com/gentoo/portage/blob/b5365341dad167e314023df95d2c5e0f955962f0/pym/portage/util/__init__.py#L1590</a>
+<br />
+class ConfigProtect(object)
+<br />
+<a href="https://github.com/gentoo/portage/blob/b5365341dad167e314023df95d2c5e0f955962f0/pym/portage/util/__init__.py#L1639">https://github.com/gentoo/portage/blob/b5365341dad167e314023df95d2c5e0f955962f0/pym/portage/util/__init__.py#L1639</a>
+<br />
+def isprotected(self, obj):
+<br />
+<a href="https://github.com/gentoo/portage/blob/b5365341dad167e314023df95d2c5e0f955962f0/pym/portage/util/__init__.py#L1675">https://github.com/gentoo/portage/blob/b5365341dad167e314023df95d2c5e0f955962f0/pym/portage/util/__init__.py#L1675</a>
+<pre>
+def new_protect_filename(mydest, newmd5=None, force=False):
+	"""Resolves a config-protect filename for merging, optionally
+	using the last filename if the md5 matches. If force is True,
+	then a new filename will be generated even if mydest does not
+	exist yet.
+	(dest,md5) ==> 'string'            --- path_to_target_filename
+	(dest)     ==> ('next', 'highest') --- next_target and most-recent_target
+	"""
+</pre>
+<h2>Как бы вызвать питоновую функцию из bash?</h2>
+<a href="http://stackoverflow.com/questions/8567526/calling-a-python-function-from-a-shell-script">http://stackoverflow.com/questions/8567526/calling-a-python-function-from-a-shell-script</a>
+<br />
+python -c 'import test; print test.get_foo()'
+<br />
+The <strong>-c</strong> option simply asks Python to execute some Python commands.
+
+
+<p>In order to store the result in a variable, you can therefore do:</p>
+<pre style="" class="default prettyprint prettyprinted"><code><span class="pln">RESULT_FOO</span><span class="pun">=</span><span class="str">`python -c 'import test; print test.get_foo()'`</span></code></pre>
+<p>or, equivalently</p>
+<pre style="" class="default prettyprint prettyprinted"><code><span class="pln">RESULT</span><span class="pun">=</span><span class="pln">$</span><span class="pun">(</span><span class="pln">python </span><span class="pun">-</span><span class="pln">c </span><span class="str">'import test; print test.get_foo()'</span><span class="pun">)</span></code></pre>
+<p>since backticks and <code>$(…)</code> evaluate a command and replace it by its output.</p>
+<br />
+<br />
+stackoverflow says it should be something like
+<br />
+RES=$(python -c 'from ??? import ???; new_protect_filename( (???))' )
+<br />
+<br />
+Пути поиска модулей указаны в переменной sys.path.
+<br />
+В него включены текущая директория (то есть модуль можно оставить в папке с основной программой), а также директории, в которых установлен python.
+<br />
+<br />
+при импортировании модуля его код выполняется полностью,
+то есть, если программа что-то печатает, то при её импортировании это будет напечатано.
+Этого можно избежать, если проверять, запущен ли скрипт как программа, или импортирован.
+Это можно сделать с помощью переменной __name__, которая определена в любой программе, и 
+равна "__main__", если скрипт запущен в качестве главной программы, и 
+имя, если он импортирован.
+<br />
+python searches packages/modules to import in sys.path which is populated from different sources
+including a current directory, PYTHONPATH env variable and few other sources
+
+<h2>Как передать параметр</h2>
+<a href="http://stackoverflow.com/questions/6719549/passing-bash-variables-to-python-script">http://stackoverflow.com/questions/6719549/passing-bash-variables-to-python-script</a>
+<br />
+you can just pass parameters directly on the command line. Any options passed to Python after the -c command get loaded into the sys.argv array
+<br />
+I think you can just import portage as a package because it lives in your system's site-packages
+<br />
+<br />
+You can use os.getenv to access environment variables from Python
+<br />
+test.printfoo(os.getenv('foo'))
+<br />
+
+<h2>Как положить вывод команды в переменную</h2>
+<a href="https://devmanual.gentoo.org/ebuild-writing/error-handling/index.html#die-and-subshells">https://devmanual.gentoo.org/ebuild-writing/error-handling/index.html#die-and-subshells</a>
+<br />
+<a href="https://www.gnu.org/software/bash/manual/bash.html#Command-Substitution">https://www.gnu.org/software/bash/manual/bash.html#Command-Substitution</a>
+<br />
+command &gt; tempfile || die; read myvar&lt;tempfile
+<br />
+В баше даже есть команда для получения имени временного файла. А у портажа есть ${T}
+<br />
+<a href="https://www.gnu.org/software/bash/manual/bash.html#Compound-Commands">https://www.gnu.org/software/bash/manual/bash.html#Compound-Commands</a>
+<br />
+почему я думаю, что () и $() не то же самое. Потому что кроме () бывает {}, а с ${} уже не получится вызвать внешнюю команду. То есть {} и ${} не то же самое. Тогда нет повода думать так и про () и $()
+<br />
+<br />
+<a href="http://tldp.org/LDP/abs/html/commandsub.html">http://tldp.org/LDP/abs/html/commandsub.html</a>
+<br />
+"Command substitution invokes a subshell."
+<br />
+<br />
+$ x=$(f(){ echo a;return 0; };f; ) || echo fail
+<br />
+$ x=$(f(){ echo a;return 1; };f; ) || echo fail
+<br />
+fail
+<br />
+<a href="http://linux.die.net/man/1/bash">man bash</a> / \(list\)
+<br />
+The return  status is the exit status of list.
+<br />
+May I use MYVAR=$(command) || die "command failed" or this should be done in some other way?
+<br />
+<br />
+Теперь надо собраться с мыслями и написать if then else,
+в котором проверить является ли файл /etc/shells защищаемым.
+<br />
+if portageq is_protected "${EROOT}" "/etc/shells"; then
+<br />
+else
+<br />
+fi
+<br />
+<br />
+if portageq is_protected / "/etc/shells"; then echo "protected"; else echo "unprotected"; fi
+<br />
+Combine an <strong><a href="http://www.gnu.org/software/bash/manual/bash.html#ANSI_002dC-Quoting" rel="nofollow">ANSI C-quoted string</a></strong> (<code>$'...'</code>) with a <a href="http://mywiki.wooledge.org/HereDocument?action=show&amp;redirect=HereString" rel="nofollow">here-string</a> (<code>&lt;&lt;&lt;...</code>):
+<br />
+<pre>
+#!/bin/bash
+
+# Test whether python exit status propagates.
+
+function die () {
+    echo &quot;$1&quot;
+    exit 1
+}
+
+arg=/etc/shells
+python &lt;&lt;EOF
+
+import portage
+
+print(portage.new_protect_filename(&quot;${arg}&quot;))
+EOF
+exit_status=$?
+if [ $exit_status -ne 0 ]; then
+    die &quot;Error: Python protect filename failed!&quot;
+fi
+</pre>
+
+<a href="https://gist.githubusercontent.com/VsyachePuz/47570ad527044982efb00f7b5d551467/raw/82af53f99acef2974eda7a59885829be8dcf0538/stdin">https://gist.githubusercontent.com/VsyachePuz/47570ad527044982efb00f7b5d551467/raw/82af53f99acef2974eda7a59885829be8dcf0538/stdin</a>
+
 </body>
 </html>
