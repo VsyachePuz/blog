@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как забанить крокодила</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Как забанить крокодила</h1>
+</td><td style="vertical-align:top;">
+<a href="index.htm">Блог Всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+
+/msg chanserv op ##calculate-ru
+<br />
+/msg chanserv set ##calculate-ru mlock +cnt
+<br />
+/msg ChanServ akick ##calculate-ru list
+<br />
+/msg ChanServ akick ##calculate-ru add *!*@195.189.108.125
+<br />
+/msg ChanServ akick ##calculate-ru del *!*@195.189.108.125
+<br />
+<br />
+команда
+<br />
+/mode ##calculate-ru +b
+<br />
+должна была бы выдавать список банов, но не выдаёт, потому что в IRC-клиенте бага.
+<br />
+<br />
+да и бан, созданный при помощи /mode без участия ChanServ будет держаться до тех пор, пока на канале есть участники
+<br />
+как только все выйдут, надо будет потом снова эти баны писать. Поэтому и придумали AKICK 
+
+</body>
+</html>
