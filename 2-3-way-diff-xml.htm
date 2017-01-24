@@ -14,11 +14,11 @@
 &nbsp;
 </td></tr></table>
 
-Реализация алгоритма N(OD) из работы <strong>1986, Myers</strong> для 2-way merge не даёт конкурентного преимущества, 
+Реализация алгоритма O(ND) из работы <strong>1986, Myers</strong> для 2-way merge не даёт конкурентного преимущества, 
 <br>
-потому что N(OD)-алгоритм сравнивает файлы парами (A, O), (B, O), а не все три файла сразу.
+потому что O(ND)-алгоритм сравнивает файлы парами (A, O), (B, O), а не все три файла сразу.
 <br>
-Как реализовывать попарное сравнение на C#, есть статья <strong>20060314, Hertel</strong>.
+Как реализовывать O(ND) сравнение на C#, есть статья <strong>20060314, Hertel</strong> (<a href="http://www.mathertel.de/diff/">http://www.mathertel.de/diff/</a>).
 <br>
 <br>
 Конкурентного преимущества он не даёт, потому что приводит к неоптимальным результатам, 
@@ -104,7 +104,7 @@ Myers EW. An o(nd) difference algorithm and its variations. Algorithmica, 1986, 
 <br>
 <a href="https://en.wikipedia.org/wiki/Longest_common_subsequence_problem">https://en.wikipedia.org/wiki/Longest_common_subsequence_problem</a>
 <br>
-15 страниц, читать нужно, потому что LCS это база для N(OD)
+15 страниц, читать нужно, потому что LCS это база для O(ND)
 </dd>
 
 </dl>
@@ -119,7 +119,7 @@ Myers EW. An o(nd) difference algorithm and its variations. Algorithmica, 1986, 
 15 страниц
 </dd>
 
-<br />
+
 
 <dt>1989, Kaizhong Zhang and Dennis Shasha, Simple fast algorithms for the editing distance between trees and related problems</dt>
 <dd>
@@ -138,6 +138,59 @@ Tutorial: <a href="http://www.youtube.com/watch?v=hwiks-n7vso">http://www.youtub
 12 страниц
 </dd>    
 </dl>
+
+
+<h3>Прочая литература</h3>
+<dl>
+
+
+<dt>2003, Yuan Wang David J. DeWitt Jin-Yi Cai, X-Diff: An Effective Change Detection Algorithm for XML Documents, University of Wisconsin – Madison, WI, U.S.A.</dt>
+<dd>
+<a href="http://www.inf.unibz.it/~nutt/Teaching/XMLDM1112/XMLDM1112Coursework/WangEtAl-ICDE2003.pdf">http://www.inf.unibz.it/~nutt/Teaching/XMLDM1112/XMLDM1112Coursework/WangEtAl-ICDE2003.pdf</a>
+<br />
+X-Diff: An Effective Change Detection Algorithm for XML Documents. Yuan Wang, David J. DeWitt, Jin-Yi Cai. ICDE 2003.
+<br />
+<a href="http://pages.cs.wisc.edu/~yuanwang/papers/xdiff.pdf">http://pages.cs.wisc.edu/~yuanwang/papers/xdiff.pdf</a>
+<br />
+sources on Java and C:
+<br />
+<a href="http://pages.cs.wisc.edu/~yuanwang/xdiff.html">http://pages.cs.wisc.edu/~yuanwang/xdiff.html</a>
+<br />
+</dd>
+
+
+
+<dt>1995-01, David T. Barnard, Gwen Clarke, Nicholas Duncan, "Tree-to-tree Correction for Document Trees", Technical Report 95-372, Department of Computing and Information Science
+Queen's University, Kingston, Ontario K7L 3N6, Canada</dt>
+<dd>
+<a href="http://research.cs.queensu.ca/TechReports/Reports/1995-372.pdf">http://research.cs.queensu.ca/TechReports/Reports/1995-372.pdf</a>
+<br />
+"Our algorithm allows subtree operations but is otherwise similar to that of Zhang and Shasha."
+<br />
+</dd>
+
+
+
+<dt>A Semantical Change Detection Algorithm for XML</dt>
+<dd><a href="http://www.inf.ufpr.br/carmem/pub/seke07.pdf">http://www.inf.ufpr.br/carmem/pub/seke07.pdf</a>
+<br />
+</dd>
+
+<dt>Yan Chen, Sanjay Madria, Sourav Bhowmick, "DiffXML: Change Detection in XML Data"</dt>
+<dd>
+
+<br />
+</dd>
+    
+    
+</dl>
+<br />
+<br />
+<a href="https://lib.lesscomplex.org/cms/tag/diffxml">https://lib.lesscomplex.org/cms/tag/diffxml</a>
+<br />
+<a href="http://tomx.inf.elte.hu/twiki/pub/Tudas_Labor/2012Summer/XRel_Change_SQL.pdf">http://tomx.inf.elte.hu/twiki/pub/Tudas_Labor/2012Summer/XRel_Change_SQL.pdf</a>
+<br />
+<a href="https://www.cise.ufl.edu/~helal/projects/ubidata/publications/sbbd-02-final.pdf">https://www.cise.ufl.edu/~helal/projects/ubidata/publications/sbbd-02-final.pdf</a>
 
 </body>
 </html>

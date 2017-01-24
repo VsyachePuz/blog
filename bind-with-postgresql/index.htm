@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>Как настроить bind с postgresql</title>
+</head>
+<body>
+
+<table><tr><td style="vertical-align:top;">
+<h1>Как настроить bind с postgresql</h1>
+</td><td style="vertical-align:top;">
+<a href="../index.htm">Блог Всячепуза</a>
+<br />
+&nbsp;
+</td></tr></table>
+
+"Интеграция BIND + PostgreSQL", Сергей Алаев, журнал "Системный администратор", 2006-12
+<br />
+описаны 2 метода соединения BIND и PostgreSQL.
+
+<h2>DLZ-драйверы</h2>
+Предполагается что BIND собран с поддержкой DLZ.
+<br />
+при сборке BIND'а было достаточно указать в переменной USE флаги "dlz" и "postgresql"
+
+<h2>с использованием SDB</h2>
+<br />
+<br />
+
+
+<a href="http://www.netpatch.ru/bind-and-postgresql.html">http://www.netpatch.ru/bind-and-postgresql.html</a>
+
+<h2>необходимо пропатчить BIND</h2>
+
+<h2>создать БД</h2>
+необходимо создать БД в которой будет находиться информация для BIND, и пользователя от имени которого BIND будет работать с БД
+<br />
+Настройка БД 
+								производится с помощью стандартной утилиты psql входящей в дистрибутив 
+								PostgreSQL.
+							</p>
+							<code>
+								<object>
+									<pre>$ psql
+Welcome to psql 8.0.15, the PostgreSQL interactive terminal.
+
+Type:  \copyright for distribution terms
+       \h for help with SQL commands
+       \? for help with psql commands
+       \g or terminate with semicolon to execute query
+       \q to quit
+postgres=# CREATE USER named PASSWORD '123456';
+postgres=# CREATE DATABASE named WITH OWNER = named;
+CREATE DATABASE
+</pre>
+								</object>
+							</code>
+							<p>Создаём таблицы и индексы:</p>
+							<code>
+								<object>
+									<pre>postgres=# \c named
+You are now connected to database "named".
+named=# CREATE TABLE dns_records (
+    zone text,
+    host text,
+    ttl int8,
+    type text,
+    mx_priority text,
+    data text,
+    resp_person text,
+    serial int8,
+    refresh int8,
+    retry int8,
+    expire int8,
+    minimum int8
+)WITH OIDS;
+CREATE TABLE
+named=# CREATE INDEX host_index ON dns_records USING btree (host);
+CREATE INDEX
+named=# CREATE INDEX type_index ON dns_records USING btree ("type");
+CREATE INDEX
+named=# CREATE TABLE xfr_table
+(
+    zone text,
+    client text
+)
+WITH OIDS;
+CREATE TABLE</pre>
+								</object>
+							</code>
+							<p>
+								<font color="red"><b>Внимание!</b></font> Две следующие команды были пропущены 
+								в оригинальной статье, следствием этого являлось падение BIND при попытке 
+								использовать dlz-драйвер.
+							</p>
+							<code>
+								<object>
+									<pre>named=# ALTER TABLE dns_records OWNER TO named;
+ALTER TABLE
+named=# ALTER TABLE xfr_table OWNER TO named;
+ALTER TABLE</pre>
+								</object>
+							</code>
+							<p>
+								Проблема возникала т.к. все манипуляции с БД named мы производили от имени 
+								пользователя postgres, поэтому при попытке обратиться к БД от любого другого 
+								пользователя (от того же named) происходила ошибка - "отказано в доступе" 
+								потому что владельцем таблиц в базе named был пользователь postgres.
+								<br />
+Добавим основные записи прямой и обратной зоны для тестового домена 
+								test-zone.info:</p>
+							<code>
+								<object>
+									<pre>named=# INSERT INTO dns_records(zone, host, ttl,type, data, 
+                            resp_person, serial, refresh, retry,expire, minimum)
+            VALUES ('test-zone.info', '@',38400, 'SOA', 'ns1.test-zone.info.',
+            'admin.test-zone.info.', 1161450241,10800,3600,604800,38400);
+named=# INSERT INTO dns_records(zone, host, type, data) 
+            VALUES ('test-zone.info', '@','NS','ns1.test-zone.info.');
+named=# INSERT INTO dns_records(zone, host, type, data) 
+            VALUES ('test-zone.info', '@','NS','ns2.test-zone.info.');
+named=# INSERT INTO dns_records(zone, host, type, data) 
+            VALUES ('test-zone.info', 'www','CNAME','test-zone.info.');
+named=# INSERT INTO dns_records(zone, host, type, mx_priority, data) 
+            VALUES ('test-zone.info', 'test-zone.info','MX',50,'mx.test-zone.info.');
+named=# INSERT INTO dns_records(zone, host, ttl,type, data, resp_person, 
+		serial, refresh, retry,expire, minimum)
+            VALUES ('168.192.in-addr.arpa', '@',38400, 'SOA', 'ns1.test-zone.info.',
+		'admin.test-zone.info.', 1161450241,10800,3600,604800,38400);
+named=# INSERT INTO dns_records(zone, host, ttl,type, data,	resp_person, 
+		serial, refresh, retry,expire, minimum)
+            VALUES ('10.in-addr.arpa', '@',38400, 'SOA', 'ns1.test-zone.info.',
+            'admin.test-zone.info.', 1161450241,10800,3600,604800,38400);
+named=# INSERT INTO xfr_table VALUES ('test-zone.info', '127.0.0.1');
+named=# INSERT INTO xfr_table VALUES ('10.in-addr.arpa', '127.0.0.1');
+named=# INSERT INTO xfr_table VALUES ('168.192.in-addr.arpa', '127.0.0.1');</pre>
+								</object>
+							</code>
+							
+Общий вид запроса для добавления хостов в прямую зону:
+							</p>
+							<code>
+								<object>
+									<pre>INSERT INTO dns_records (zone, host, type, data) 
+    VALUES ('test-zone.info', 'hostname', 'A', 'IP.адрес.добавляемого.хоста');
+</pre>
+								</object>
+							</code>Общий вид запросов для добавления хоста в обратную зону: <code>
+								<object>
+									<pre>INSERT INTO dns_records (zone, host, type, data) 
+    VALUES ('10.in-addr.arpa', 'три.октета.адреса', 'PTR', 'hostname.test-zone.info.');
+INSERT INTO dns_records (zone, host, type, data) 
+    VALUES ('168.192.in-addr.arpa', 'два-октета.адреса', 'PTR', 'hostname.test-zone.info.');
+</pre>
+								</object>
+							</code>
+							
+</body>
+</html>
